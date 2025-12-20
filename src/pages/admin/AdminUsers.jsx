@@ -317,7 +317,7 @@ const Users = () => {
                               Subscriber
                             </SelectItem>
                             <SelectItem value="editor">Editor</SelectItem>
-                            <SelectItem value="superadmin">Admin</SelectItem>
+                            {/* <SelectItem value="superadmin">Admin</SelectItem> */}
                           </SelectContent>
                         </Select>
                       </TableCell>
