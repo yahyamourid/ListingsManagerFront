@@ -334,36 +334,37 @@ const Users = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         {user.role != "superadmin" ? (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleToggleActivation(user)}
-                            title={user.is_active ? "Deactivate" : "Activate"}
-                          >
-                            {user.is_active ? (
-                              <ToggleRight className="w-10 h-10 text-green-500" />
-                            ) : (
-                              <ToggleLeft className="w-4 h-4 text-muted-foreground" />
-                            )}
-                          </Button>
+                          <div className="">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleToggleActivation(user)}
+                              title={user.is_active ? "Deactivate" : "Activate"}
+                            >
+                              {user.is_active ? (
+                                <ToggleRight className="w-10 h-10 text-green-500" />
+                              ) : (
+                                <ToggleLeft className="w-4 h-4 text-muted-foreground" />
+                              )}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleOpenModal(user)}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteClick(user)}
+                            >
+                              <Trash2 className="w-4 h-4 text-destructive" />
+                            </Button>
+                          </div>
                         ) : (
                           <></>
                         )}
-
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleOpenModal(user)}
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteClick(user)}
-                        >
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
