@@ -24,7 +24,7 @@ import EditorStatistics from "./pages/editor/EditorStatistics";
 import EditorProfile from "./pages/editor/EditorProfile";
 import SubscriberProfile from "./pages/subscriber/SubscriberProfile";
 import SubscriberFavorites from "./pages/subscriber/SubscriberFavorites";
-
+import { Analytics } from "@vercel/analytics/react"
 const queryClient = new QueryClient();
 
 // Protected route - requires authentication
@@ -98,6 +98,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <Analytics/>
       <BrowserRouter>
         <AuthProvider>
           <Routes>
