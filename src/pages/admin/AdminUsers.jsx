@@ -312,13 +312,15 @@ const Users = () => {
                               {user.role}
                             </span>
                           </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="subscriber">
-                              Subscriber
-                            </SelectItem>
-                            <SelectItem value="editor">Editor</SelectItem>
-                            {/* <SelectItem value="superadmin">Admin</SelectItem> */}
-                          </SelectContent>
+                          {user.role != "superadmin" && (
+                            <SelectContent>
+                              <SelectItem value="subscriber">
+                                Subscriber
+                              </SelectItem>
+                              <SelectItem value="editor">Editor</SelectItem>
+                              {/* <SelectItem value="superadmin">Admin</SelectItem> */}
+                            </SelectContent>
+                          )}
                         </Select>
                       </TableCell>
                       <TableCell>
