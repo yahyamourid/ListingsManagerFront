@@ -41,8 +41,12 @@ export function FiltersBar({
   };
   const LISTING_WEBSITES = [
     { value: "sunbeltbonaire", label: "Sunbelt Reality" },
+    { value: "harbourtown", label: "Harbour Town" },
     { value: "kwbonaire", label: "KW Bonaire" },
+    { value: "ncl_real_estate", label: "NCL Real Estate" },
     { value: "qvillas", label: "QVillas" },
+    { value: "real_estate_guy", label: "Real Estate Guy" },
+    { value: "remax_bonaire", label: "Remax Bonaire" },
     // add more anytime
   ];
   return (
@@ -88,7 +92,7 @@ export function FiltersBar({
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4">
+          <div className={`grid grid-cols-1 sm:grid-cols-2 ${isHistory ? "lg:grid-cols-7" :"lg:grid-cols-6" } gap-4`}>
             {/* Min Price */}
             <div>
               <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
