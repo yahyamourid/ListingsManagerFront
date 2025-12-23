@@ -40,7 +40,7 @@ export function FiltersBar({
     });
   };
   const LISTING_WEBSITES = [
-    { value: "sunbeltbonaire", label: "Sunbelt Reality" },
+    { value: "sunbeltbonaire", label: "Sunbelt Realty" },
     { value: "harbourtown", label: "Harbour Town" },
     { value: "kwbonaire", label: "KW Bonaire" },
     { value: "ncl_real_estate", label: "NCL Real Estate" },
@@ -57,7 +57,7 @@ export function FiltersBar({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search by address, source, or zoning..."
+            placeholder="Search by address or area"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className="pl-10"
@@ -73,7 +73,7 @@ export function FiltersBar({
           Filters
           {hasActiveFilters && (
             <span className="ml-1 px-2 py-0.5 bg-accent text-accent-foreground text-xs rounded-full">
-              Active
+              FILTERS ON
             </span>
           )}
         </Button>
