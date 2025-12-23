@@ -223,7 +223,7 @@ const Index = () => {
                   Listings Manager
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Real Estate Database
+                  BonMLS
                 </p>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from '@/contexts/AuthContext';
 import {
   ArrowLeft,
   MapPin,
@@ -10,13 +11,17 @@ import {
   Building,
   Plus,
   Pen,
+  Building2,
+  List,
+  LayoutGrid, 
+  LogOut,
+  LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listingsApi } from "@/services/api";
 import { MapView } from "@/components/listings/MapView";
-import { useAuth } from "@/contexts/AuthContext";
 import { ListingFormModal } from "@/components/listings/ListingFormModal";
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 /* ===================== HELPERS ===================== */
 
 const formatCurrency = (value) => {
@@ -114,6 +119,7 @@ function SelectedAttributesGrid({ listing }) {
 
 export default function ListingDetails() {
   const { toast } = useToast();
+  const { user, isEditor, isAdmin, isSubscriber, canAccessDashboard, logout } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const [listing, setListing] = useState(null);
@@ -121,7 +127,7 @@ export default function ListingDetails() {
   const [error, setError] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user, isEditor, isAdmin, isSubscriber } = useAuth();
+  const [viewMode, setViewMode] = useState('table');
 
   const fetchListing = async () => {
     try {
@@ -143,6 +149,10 @@ export default function ListingDetails() {
     setModalOpen(!isModalOpen);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   const handleFormSubmit = async (data) => {
     setIsSubmitting(true);
     try {
@@ -163,6 +173,14 @@ export default function ListingDetails() {
       setIsSubmitting(false);
     }
   };
+
+  const getRoleBadge = () => {
+    if (isAdmin) return { label: 'Admin', className: 'bg-destructive/20 text-destructive' };
+    if (isEditor) return { label: 'Editor', className: 'bg-accent/20 text-accent' };
+    return { label: 'Subscriber', className: 'bg-primary/20 text-primary' };
+  };
+
+  const roleBadge = getRoleBadge();
 
   if (loading) {
     return (
@@ -196,11 +214,120 @@ export default function ListingDetails() {
   return (
     <div className="min-h-screen bg-background">
       {/* ===================== HEADER ===================== */}
-      <header className="sticky flex justify-between items-center px-5 top-0 z-10 bg-card border-b">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold font-display text-foreground">
+                  Listings Manager
+                </h1>
+                <p className="text-sm text-muted-foreground">BonMLS</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* User Info */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    isAdmin
+                      ? "bg-destructive"
+                      : isEditor
+                      ? "bg-accent"
+                      : "bg-primary"
+                  }`}
+                />
+                <span className="text-sm font-medium text-foreground">
+                  {user?.name}
+                </span>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full ${roleBadge.className}`}
+                >
+                  {roleBadge.label}
+                </span>
+              </div>
+
+              {/* View Mode Toggle */}
+              <div className="flex items-center bg-muted rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode("table")}
+                  className={`p-2 rounded-md transition-all ${
+                    viewMode === "table"
+                      ? "bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <List className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode("cards")}
+                  className={`p-2 rounded-md transition-all ${
+                    viewMode === "cards"
+                      ? "bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <LayoutGrid className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Subscriber Actions */}
+              {isSubscriber && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate("/favorites")}
+                  >
+                    <Heart className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate("/profile")}
+                  >
+                    <User className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
+
+              {/* Editor/Admin Actions */}
+              {(isEditor || isAdmin) && (
+                <>
+                  {/* <Button
+                    onClick={handleOpenCreateModal}
+                    className="btn-gradient"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Listing
+                  </Button> */}
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate(isAdmin ? "/admin" : "/editor")}
+                    className="flex items-center gap-2"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </Button>
+                </>
+              )}
+
+              <Button variant="outline" size="icon" onClick={handleLogout}>
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+      <header className="sticky flex justify-between items-center px-5 top-0 z-10 bg-gray-100 border-b">
         <div className="px-6 py-4 flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+          {/* <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
             <ArrowLeft className="w-5 h-5" />
-          </Button>
+          </Button> */}
 
           <div>
             <h1 className="text-lg font-semibold">Listing Details</h1>
@@ -346,7 +473,7 @@ export default function ListingDetails() {
       <ListingFormModal
         isOpen={isModalOpen}
         onClose={() => {
-          setModalOpen()
+          setModalOpen();
         }}
         onSubmit={handleFormSubmit}
         listing={listing}

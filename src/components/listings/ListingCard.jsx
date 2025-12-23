@@ -9,6 +9,7 @@ import {
   Pencil,
   Trash2,
   Heart,
+  MapPinHouse
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -42,7 +43,8 @@ export function ListingCard({
   const handleCardClick = (e) => {
     // Don't navigate if clicking on action buttons or links
     if (e.target.closest("button") || e.target.closest("a")) return;
-    navigate(`/details/${listing.id}`);
+    e.stopPropagation();
+    window.open(`/details/${listing.id}`, "_blank");
   };
 
   return (
@@ -148,10 +150,10 @@ export function ListingCard({
               <span>{listing.bathrooms} baths</span>
             </div>
           )}
-          {listing.square_footage && (
+          {listing.area && (
             <div className="flex items-center gap-1.5">
-              <Square className="w-4 h-4" />
-              <span>{listing.square_footage}</span>
+              <MapPinHouse className="w-4 h-4" />
+              <span>{listing.area}</span>
             </div>
           )}
         </div>

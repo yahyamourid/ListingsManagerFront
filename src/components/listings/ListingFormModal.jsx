@@ -14,15 +14,15 @@ import {
 
 // Predefined listing websites
 const LISTING_WEBSITES = [
-    { value: "sunbeltbonaire", label: "Sunbelt Reality" },
-    { value: "harbourtown", label: "Harbour Town" },
-    { value: "kwbonaire", label: "KW Bonaire" },
-    { value: "ncl_real_estate", label: "NCL Real Estate" },
-    { value: "qvillas", label: "QVillas" },
-    { value: "real_estate_guy", label: "Real Estate Guy" },
-    { value: "remax_bonaire", label: "Remax Bonaire" },
-    // add more anytime
-  ];
+  { value: "sunbeltbonaire", label: "Sunbelt Realty" },
+  { value: "harbourtown", label: "Harbour Town" },
+  { value: "kwbonaire", label: "KW Bonaire" },
+  { value: "ncl_real_estate", label: "NCL Real Estate" },
+  { value: "qvillas", label: "QVillas" },
+  { value: "real_estate_guy", label: "Real Estate Guy" },
+  { value: "remax_bonaire", label: "Remax Bonaire" },
+  // add more anytime
+];
 
 const initialFormState = {
   page_title: "",
@@ -258,8 +258,16 @@ export function ListingFormModal({
                 id="initial_price"
                 name="initial_price"
                 type="number"
-                value={formData.initial_price}
-                onChange={handleChange}
+                min="0"
+                value={formData.initial_price ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  setFormData({
+                    ...formData,
+                    initial_price: value.startsWith("-") ? null : value,
+                  });
+                }}
                 placeholder="500000"
                 className="mt-1.5"
               />
@@ -271,8 +279,15 @@ export function ListingFormModal({
                 id="current_price"
                 name="current_price"
                 type="number"
-                value={formData.current_price}
-                onChange={handleChange}
+                min="0"
+                value={formData.current_price ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFormData({
+                    ...formData,
+                    current_price: value.startsWith("-") ? null : value,
+                  });
+                }}
                 placeholder="495000"
                 className="mt-1.5"
               />
@@ -285,8 +300,15 @@ export function ListingFormModal({
                 id="bedrooms"
                 name="bedrooms"
                 type="number"
-                value={formData.bedrooms}
-                onChange={handleChange}
+                min="0"
+                value={formData.bedrooms ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFormData({
+                    ...formData,
+                    bedrooms: value.startsWith("-") ? null : value,
+                  });
+                }}
                 placeholder="3"
                 className="mt-1.5"
               />
@@ -298,9 +320,16 @@ export function ListingFormModal({
                 id="bathrooms"
                 name="bathrooms"
                 type="number"
+                min="0"
                 step="0.5"
-                value={formData.bathrooms}
-                onChange={handleChange}
+                value={formData.bathrooms ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFormData({
+                    ...formData,
+                    bathrooms: value.startsWith("-") ? null : value,
+                  });
+                }}
                 placeholder="2.5"
                 className="mt-1.5"
               />
@@ -308,7 +337,7 @@ export function ListingFormModal({
 
             {/* Building Footage / Lot Footage */}
             <div>
-              <Label htmlFor="building_footage">Building Footage</Label>
+              <Label htmlFor="building_footage">Int Size</Label>
               <Input
                 id="building_footage"
                 name="building_footage"
@@ -320,7 +349,7 @@ export function ListingFormModal({
             </div>
 
             <div>
-              <Label htmlFor="lot_footage">Lot Footage</Label>
+              <Label htmlFor="lot_footage">Lot Size</Label>
               <Input
                 id="lot_footage"
                 name="lot_footage"
@@ -388,8 +417,15 @@ export function ListingFormModal({
                 id="sale_price"
                 name="sale_price"
                 type="number"
-                value={formData.sale_price}
-                onChange={handleChange}
+                min="0"
+                value={formData.sale_price ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFormData({
+                    ...formData,
+                    sale_price: value.startsWith("-") ? null : value,
+                  });
+                }}
                 placeholder="490000"
                 className="mt-1.5"
               />

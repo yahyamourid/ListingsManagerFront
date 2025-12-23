@@ -21,21 +21,31 @@ const formatCurrency = (value) => {
 
 const formatDate = (date) => {
   if (!date) return "-";
-  return new Date(date).toLocaleDateString("en-US", {
+
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  return new Date(date).toLocaleString("en-US", {
+    timeZone: userTimeZone,
     year: "numeric",
     month: "short",
     day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
   });
 };
 
+
 const columns = [
-  { key: "id", label: "ID", width: "w-1/12", sortable: true },
-  { key: "address", label: "Address", width: "w-1/12" },
+  // { key: "id", label: "ID", width: "w-1/12", sortable: true },
+  { key: "updated_at", label: "Last Update", width: "w-2/12", sortable: true },
+  { key: "address", label: "Address", width: "w-1/6" },
   { key: "current_price", label: "Price", width: "w-1/12", sortable: true },
   { key: "bedrooms", label: "Beds", width: "w-1/12" },
   { key: "bathrooms", label: "Baths", width: "w-1/12" },
-  { key: "building_footage", label: "Buil Ft", width: "w-1/6" },
-  { key: "lot_footage", label: "Lot Ft", width: "w-1/6" },
+  { key: "building_footage", label: "Int Size", width: "w-1/12" },
+  // { key: "lot_footage", label: "Lot Size", width: "w-1/6" },
+  { key: "area", label: "Area", width: "w-1/12" },
   { key: "listing_website", label: "Source", width: "w-1/12" },
 ];
 
@@ -66,7 +76,8 @@ export function ListingsTable({
   const handleRowClick = (listing, e) => {
     // Don't navigate if clicking on action buttons or links
     if (e.target.closest("button") || e.target.closest("a")) return;
-    navigate(`/details/${listing.id}`);
+    e.stopPropagation();
+    window.open(`/details/${listing.id}`, "_blank");
   };
 
   return (
@@ -102,13 +113,13 @@ export function ListingsTable({
           <tbody>
             {listings.map((listing, index) => (
               <tr
-                key={listing.id}
+                key={listing.updated_at}
                 className="border-b border-border/50 hover:bg-muted/30 transition-colors animate-fade-in cursor-pointer"
                 style={{ animationDelay: `${index * 30}ms` }}
                 onClick={(e) => handleRowClick(listing, e)}
               >
                 <td className="px-4 py-4 text-sm font-medium text-foreground">
-                  #{listing.id}
+                  {formatDate(listing.updated_at)}
                 </td>
                 <td className="px-4 py-4">
                   <div className="flex items-center gap-3">
@@ -137,7 +148,7 @@ export function ListingsTable({
                   {listing.building_footage || "-"}
                 </td>
                 <td className="px-4 py-4 text-sm text-muted-foreground">
-                  {listing.lot_footage || "-"}
+                  {listing.area || "-"}
                 </td>
                 <td className="px-4 py-4 text-sm text-muted-foreground">
                   {listing.listing_website || "-"}
