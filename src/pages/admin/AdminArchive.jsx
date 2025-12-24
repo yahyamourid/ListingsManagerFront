@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useListingsWithHistory } from "@/hooks/useListingsWithHistory";
 import { FiltersBar } from "@/components/listings/FiltersBar";
 import { Pagination } from "@/components/listings/Pagination";
+import formatDate from "../../utils/formateDate";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -241,10 +242,7 @@ const AdminArchive = () => {
                                     {h.editor_full_name}
                                   </span>{" "}
                                   at{" "}
-                                  {format(
-                                    new Date(h.changed_at),
-                                    "MMM dd, yyyy HH:mm"
-                                  )}
+                                  {formatDate(h.changed_at)}
                                 </p>
                               </div>
                             </div>
@@ -286,3 +284,4 @@ const AdminArchive = () => {
 };
 
 export default AdminArchive;
+

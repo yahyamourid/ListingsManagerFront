@@ -9,7 +9,7 @@ import {
   Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import formatDate from "../../utils/formateDate";
 const formatCurrency = (value) => {
   if (!value) return "-";
   return new Intl.NumberFormat("en-US", {
@@ -19,21 +19,21 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-const formatDate = (date) => {
-  if (!date) return "-";
+// const formatDate = (date) => {
+//   if (!date) return "-";
 
-  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+//   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  return new Date(date).toLocaleString("en-US", {
-    timeZone: userTimeZone,
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true
-  });
-};
+//   return new Date(date).toLocaleString("en-US", {
+//     timeZone: userTimeZone,
+//     year: "numeric",
+//     month: "short",
+//     day: "numeric",
+//     hour: "numeric",
+//     minute: "2-digit",
+//     hour12: true
+//   });
+// };
 
 
 const columns = [
