@@ -128,7 +128,25 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { success: false, error: error.message || 'Failed to verify otp' };
     }
-  }
+  };
+
+  const verify_token = async(user_id) => {
+    try{
+      const result = await authApi.verify_token(user_id);
+      return result;
+    } catch (error){
+      return { success: false, error: error.message || 'Invalid Token' };
+    }
+  };
+
+  const set_password = async(user_id, token, new_password) => {
+    try{
+      await authApi.set_password(user_id, token, new_password);
+      return { success: true };
+    } catch (error){
+      return { success: false, error: error.message || 'Invalid Token' };
+    }
+  };
 
   // Role checks - using backend role values
   const isSubscriber = user?.role === 'subscriber';
@@ -148,6 +166,8 @@ export const AuthProvider = ({ children }) => {
       forgotPassword,
       resetPassword,
       verifyOtp,
+      verify_token,
+      set_password,
       isSubscriber,
       isEditor,
       isAdmin,

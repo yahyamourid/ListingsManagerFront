@@ -35,11 +35,36 @@ export const authApi = {
       throw error;
     }
   },
+  
+  verify_token: async (user_id) => {
+     try {
+      const response = await apiClient.post('/auth/validate-set-password-token', { id:user_id }, { includeAuth: false });
+      return response;
+    } catch (error) {
+      if (error.status === 0 || error.message === 'Network error') {
+        throw new ApiError('Invalid credentials', 401);
+      }
+      throw error;
+    }
+  },
+
+  set_password: async (user_id, token, new_password) => {
+     try {
+      const response = await apiClient.post('/auth/set-password', { id:user_id, token, new_password }, { includeAuth: false });
+      return response;
+    } catch (error) {
+      if (error.status === 0 || error.message === 'Network error') {
+        throw new ApiError('Invalid credentials', 401);
+      }
+      throw error;
+    }
+  },
 
   logout: () => {
     TokenManager.clearTokens();
     localStorage.removeItem('listingsUser');
   },
+
 
   isAuthenticated: () => TokenManager.hasValidToken(),
 };
