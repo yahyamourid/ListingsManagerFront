@@ -23,7 +23,7 @@ const AdminArchive = () => {
     error,
 
     refetch,
-    
+
     searchTerm,
     setSearchTerm,
     filters,
@@ -236,7 +236,11 @@ const AdminArchive = () => {
                                     : `Status: ${h.old_status} → ${h.new_status}`}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                  {h.editor_full_name} ·{" "}
+                                  Changed by{" "}
+                                  <span className="font-semibold text-foreground text-blue-600">
+                                    {h.editor_full_name}
+                                  </span>{" "}
+                                  at{" "}
                                   {format(
                                     new Date(h.changed_at),
                                     "MMM dd, yyyy HH:mm"
