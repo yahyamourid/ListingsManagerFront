@@ -15,7 +15,9 @@ import {
   List,
   LayoutGrid, 
   LogOut,
-  LayoutDashboard
+  LayoutDashboard,
+  Heart,
+  User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listingsApi } from "@/services/api";
