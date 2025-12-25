@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,8 @@ export function FiltersBar({
   onToggleFilters,
   isHistory,
 }) {
+  const [localSearch, setLocalSearch] = useState(searchTerm || "");
+
   const hasActiveFilters =
     filters.min_price ||
     filters.max_price ||
@@ -39,6 +41,17 @@ export function FiltersBar({
       is_modified: "",
     });
   };
+
+  const applySearch = () => {
+    onSearchChange(localSearch.trim());
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      applySearch();
+    }
+  };
+
   const LISTING_WEBSITES = [
     { value: "sunbelt_realty", label: "Sunbelt Realty" },
     { value: "harbourtown", label: "Harbour Town" },
@@ -58,11 +71,16 @@ export function FiltersBar({
           <Input
             type="text"
             placeholder="Search by address or area"
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="pl-10"
           />
         </div>
+
+        <Button onClick={applySearch}>
+          Search
+        </Button>
 
         <Button
           variant={showFilters ? "default" : "outline"}
