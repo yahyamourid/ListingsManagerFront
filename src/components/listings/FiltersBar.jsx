@@ -243,9 +243,9 @@ export function FiltersBar({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Any</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="sold">Sold</SelectItem>
+                  <SelectItem value="for sale">FOR SALE</SelectItem>
+                  <SelectItem value="pending">PENDING</SelectItem>
+                  <SelectItem value="sold">SOLD</SelectItem>
                 </SelectContent>
               </Select>
             </div>
