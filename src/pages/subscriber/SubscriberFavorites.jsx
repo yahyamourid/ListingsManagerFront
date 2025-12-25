@@ -173,42 +173,41 @@ const SubscriberFavorites = () => {
         </div>
       </header>
       <div className="mx-auto">
-        <div className="flex items-center gap-4 mt-4 mx-10">
-          <h1 className="text-lg font-bold flex items-center gap-2 text-red-500 bg-red-200 pl-4 pr-28 py-2 rounded-r-3xl">
-            <Heart className="h-6 w-6 text-destructive" />
-            My Favorites
-          </h1>
-        </div>
-
         {loading ? (
           <div className="flex justify-center py-16">
             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
           </div>
         ) : favorites.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center py-12">
+          <div className="my-auto">
+            <div className="flex flex-col items-center py-12">
               <Heart className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">No favorites yet</h3>
               <p className="text-muted-foreground mb-4 text-center">
                 Start adding listings to your favorites.
               </p>
               <Button onClick={() => navigate("/")}>Browse Listings</Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ) : (
           <div className="px-10">
+            <div className="flex items-center gap-4 mt-4">
+              <h1 className="text-lg font-bold flex items-center gap-2 text-red-500 bg-red-200 pl-4 pr-28 py-2 rounded-r-3xl">
+                <Heart className="h-6 w-6 text-destructive" />
+                My Favorites
+              </h1>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 py-5">
               {favorites.map((item, index) => (
-               <div
-                    key={item.favorite_id}
-                    className="animate-slide-up"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                 <ListingCardFavorite
-                  listing={item.listing}
-                  onDelete={handleRemoveFavorite}
-                />
-               </div>
+                <div
+                  key={item.favorite_id}
+                  className="animate-slide-up"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <ListingCardFavorite
+                    listing={item.listing}
+                    onDelete={handleRemoveFavorite}
+                  />
+                </div>
               ))}
             </div>
 
