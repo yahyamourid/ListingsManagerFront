@@ -40,7 +40,7 @@ export function FiltersBar({
     });
   };
   const LISTING_WEBSITES = [
-    { value: "sunbeltbonaire", label: "Sunbelt Realty" },
+    { value: "sunbelt_realty", label: "Sunbelt Realty" },
     { value: "harbourtown", label: "Harbour Town" },
     { value: "kwbonaire", label: "KW Bonaire" },
     { value: "ncl_real_estate", label: "NCL Real Estate" },

@@ -62,10 +62,10 @@ export function ListingCard({
           </div>
         )}
 
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-6 -left-9 -rotate-45 overflow-hidden">
           <span
-            className={`px-3 py-1 text-xs font-semibold rounded-full text-white ${
-              listing.status === "active" && "bg-green-600"
+            className={`px-14 py-2 text-xs font-semibold rounded-full text-white uppercase ${
+              listing.status === "for sale" && "bg-green-600"
             } ${
               listing.status === "pending" && "bg-yellow-600"
             } ${listing.status === "sold" && "bg-red-600 "}

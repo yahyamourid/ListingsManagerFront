@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/contexts/AuthContext";
 import {
   ArrowLeft,
   MapPin,
@@ -13,11 +13,11 @@ import {
   Pen,
   Building2,
   List,
-  LayoutGrid, 
+  LayoutGrid,
   LogOut,
   LayoutDashboard,
   Heart,
-  User
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listingsApi } from "@/services/api";
@@ -41,7 +41,7 @@ function StatusBadge({ status }) {
   if (!status) return null;
 
   const styles = {
-    active: "bg-green-100 text-green-700 border-green-300",
+    "for sale": "bg-green-100 text-green-700 border-green-300",
     pending: "bg-yellow-100 text-yellow-700 border-yellow-300",
     sold: "bg-red-100 text-red-700 border-red-300",
   };
@@ -121,7 +121,8 @@ function SelectedAttributesGrid({ listing }) {
 
 export default function ListingDetails() {
   const { toast } = useToast();
-  const { user, isEditor, isAdmin, isSubscriber, canAccessDashboard, logout } = useAuth();
+  const { user, isEditor, isAdmin, isSubscriber, canAccessDashboard, logout } =
+    useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const [listing, setListing] = useState(null);
@@ -129,7 +130,7 @@ export default function ListingDetails() {
   const [error, setError] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [viewMode, setViewMode] = useState('table');
+  const [viewMode, setViewMode] = useState("table");
 
   const fetchListing = async () => {
     try {
@@ -153,7 +154,7 @@ export default function ListingDetails() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
   const handleFormSubmit = async (data) => {
     setIsSubmitting(true);
@@ -177,9 +178,14 @@ export default function ListingDetails() {
   };
 
   const getRoleBadge = () => {
-    if (isAdmin) return { label: 'Admin', className: 'bg-destructive/20 text-destructive' };
-    if (isEditor) return { label: 'Editor', className: 'bg-accent/20 text-accent' };
-    return { label: 'Subscriber', className: 'bg-primary/20 text-primary' };
+    if (isAdmin)
+      return {
+        label: "Admin",
+        className: "bg-destructive/20 text-destructive",
+      };
+    if (isEditor)
+      return { label: "Editor", className: "bg-accent/20 text-accent" };
+    return { label: "Subscriber", className: "bg-primary/20 text-primary" };
   };
 
   const roleBadge = getRoleBadge();
@@ -444,11 +450,18 @@ export default function ListingDetails() {
                 </div>
               )}
 
-              {listing.status === "sold" && (
-                <span className="absolute top-4 left-4 px-4 py-2 bg-red-600 text-white rounded-full text-sm font-semibold">
-                  SOLD
+              <div className="absolute top-7 -left-9 -rotate-45 overflow-hidden">
+                <span
+                  className={`px-14 py-4 text-sm font-semibold rounded-full text-white uppercase ${
+                    listing.status === "for sale" && "bg-green-600"
+                  } ${listing.status === "pending" && "bg-yellow-600"} ${
+                    listing.status === "sold" && "bg-red-600 "
+                  }
+            `}
+                >
+                  {listing.status}
                 </span>
-              )}
+              </div>
             </div>
 
             {listing.listing_link && (
