@@ -78,9 +78,7 @@ export function FiltersBar({
           />
         </div>
 
-        <Button onClick={applySearch}>
-          Search
-        </Button>
+        <Button onClick={applySearch}>Search</Button>
 
         <Button
           variant={showFilters ? "default" : "outline"}
@@ -110,7 +108,11 @@ export function FiltersBar({
             )}
           </div>
 
-          <div className={`grid grid-cols-1 sm:grid-cols-2 ${isHistory ? "lg:grid-cols-7" :"lg:grid-cols-6" } gap-4`}>
+          <div
+            className={`grid grid-cols-1 sm:grid-cols-2 ${
+              isHistory ? "lg:grid-cols-7" : "lg:grid-cols-6"
+            } gap-4`}
+          >
             {/* Min Price */}
             <div>
               <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
@@ -119,10 +121,16 @@ export function FiltersBar({
               <Input
                 type="number"
                 placeholder="0"
-                value={filters.min_price}
-                onChange={(e) =>
-                  onFiltersChange({ ...filters, min_price: e.target.value })
-                }
+                min="0"
+                value={filters.min_price ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  onFiltersChange({
+                    ...filters,
+                    min_price: value.startsWith("-") ? "" : value,
+                  });
+                }}
               />
             </div>
 
@@ -134,10 +142,16 @@ export function FiltersBar({
               <Input
                 type="number"
                 placeholder="No limit"
-                value={filters.max_price}
-                onChange={(e) =>
-                  onFiltersChange({ ...filters, max_price: e.target.value })
-                }
+                min="0"
+                value={filters.max_price ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  onFiltersChange({
+                    ...filters,
+                    max_price: value.startsWith("-") ? "" : value,
+                  });
+                }}
               />
             </div>
 
