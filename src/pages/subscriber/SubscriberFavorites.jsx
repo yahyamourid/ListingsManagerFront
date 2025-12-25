@@ -1,133 +1,228 @@
-import React from 'react';
-import { Heart, ArrowLeft, Trash2, ExternalLink } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { useFavorites } from '@/hooks/useFavorites';
-import { useListings } from '@/hooks/useListings';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Pagination } from "@/components/listings/pagination";
+import { useFavorites } from "@/hooks/useFavorites";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { ListingCardFavorite } from "@/components/listings/ListingCardFavorite";
+
+import {
+  Building2,
+  List,
+  LayoutGrid,
+  LogOut,
+  LayoutDashboard,
+  Heart,
+  User,
+} from "lucide-react";
+const formatPrice = (price) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(price);
 
 const SubscriberFavorites = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { favorites, removeFavorite, loading: favoritesLoading } = useFavorites();
-  const { listings, loading: listingsLoading } = useListings();
+  const { user, isEditor, isAdmin, isSubscriber, canAccessDashboard, logout } =
+    useAuth();
 
-  const favoriteListings = listings.filter(listing => favorites.includes(listing.id));
+  const getRoleBadge = () => {
+    if (isAdmin)
+      return {
+        label: "Admin",
+        className: "bg-destructive/20 text-destructive",
+      };
+    if (isEditor)
+      return { label: "Editor", className: "bg-accent/20 text-accent" };
+    return { label: "Subscriber", className: "bg-primary/20 text-primary" };
+  };
 
-  const handleRemoveFavorite = async (listingId) => {
+  const roleBadge = getRoleBadge();
+
+  const {
+    favorites,
+    loading,
+    removeFavorite,
+    refetch,
+    currentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
+    setCurrentPage,
+    setItemsPerPage,
+  } = useFavorites();
+
+  const handleRemoveFavorite = async (favoriteId) => {
     try {
-      await removeFavorite(listingId);
+      await removeFavorite(favoriteId);
       toast({
-        title: 'Removed',
-        description: 'Listing removed from favorites',
+        title: "Removed",
+        description: "Listing removed from favorites",
       });
-    } catch (error) {
+      refetch();
+    } catch {
       toast({
-        title: 'Error',
-        description: 'Failed to remove from favorites',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to remove from favorites",
+        variant: "destructive",
       });
     }
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(price);
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
-  const loading = favoritesLoading || listingsLoading;
-
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="outline" size="icon" onClick={() => navigate('/')}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Heart className="h-6 w-6 text-destructive" />
-              My Favorites
-            </h1>
-            <p className="text-muted-foreground">
-              {favoriteListings.length} {favoriteListings.length === 1 ? 'listing' : 'listings'} saved
-            </p>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold font-display text-foreground">
+                  Listings Manager
+                </h1>
+                <p className="text-sm text-muted-foreground">BonMLS</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* User Info */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    isAdmin
+                      ? "bg-destructive"
+                      : isEditor
+                      ? "bg-accent"
+                      : "bg-primary"
+                  }`}
+                />
+                <span className="text-sm font-medium text-foreground">
+                  {user?.name}
+                </span>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full ${roleBadge.className}`}
+                >
+                  {roleBadge.label}
+                </span>
+              </div>
+
+              {/* Subscriber Actions */}
+              {isSubscriber && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate("/favorites")}
+                  >
+                    <Heart className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate("/profile")}
+                  >
+                    <User className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
+
+              {/* Editor/Admin Actions */}
+              {(isEditor || isAdmin) && (
+                <>
+                  {/* <Button
+                    onClick={handleOpenCreateModal}
+                    className="btn-gradient"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Listing
+                  </Button> */}
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate(isAdmin ? "/admin" : "/editor")}
+                    className="flex items-center gap-2"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </Button>
+                </>
+              )}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => navigate("/")}
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </Button>
+
+              <Button variant="outline" size="icon" onClick={handleLogout}>
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
+        </div>
+      </header>
+      <div className="mx-auto">
+        <div className="flex items-center gap-4 mt-4 mx-10">
+          <h1 className="text-lg font-bold flex items-center gap-2 text-red-500 bg-red-200 pl-4 pr-28 py-2 rounded-r-3xl">
+            <Heart className="h-6 w-6 text-destructive" />
+            My Favorites
+          </h1>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-12">
+          <div className="flex justify-center py-16">
             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
           </div>
-        ) : favoriteListings.length === 0 ? (
+        ) : favorites.length === 0 ? (
           <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
+            <CardContent className="flex flex-col items-center py-12">
               <Heart className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium text-foreground mb-2">No favorites yet</h3>
-              <p className="text-muted-foreground text-center mb-4">
-                Start adding listings to your favorites to track them here.
+              <h3 className="text-lg font-medium mb-2">No favorites yet</h3>
+              <p className="text-muted-foreground mb-4 text-center">
+                Start adding listings to your favorites.
               </p>
-              <Button onClick={() => navigate('/')}>Browse Listings</Button>
+              <Button onClick={() => navigate("/")}>Browse Listings</Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4">
-            {favoriteListings.map((listing) => (
-              <Card key={listing.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <CardContent className="p-0">
-                  <div className="flex flex-col sm:flex-row">
-                    <div className="sm:w-48 h-32 sm:h-auto">
-                      <img
-                        src={listing.image_listing || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop'}
-                        alt={listing.address}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-foreground mb-1">{listing.address}</h3>
-                          <p className="text-xl font-bold text-primary">
-                            {formatPrice(listing.current_price)}
-                          </p>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
-                            <span>{listing.bedrooms} beds</span>
-                            <span>{listing.bathrooms} baths</span>
-                            <span>{listing.square_footage}</span>
-                          </div>
-                          {listing.sale_date && (
-                            <span className="inline-block mt-2 px-2 py-1 text-xs rounded-full bg-accent/20 text-accent">
-                              Sold
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => navigate(`/details/${listing.id}`)}
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => handleRemoveFavorite(listing.id)}
-                            className="text-destructive hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="px-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 py-5">
+              {favorites.map((item, index) => (
+               <div
+                    key={item.favorite_id}
+                    className="animate-slide-up"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                 <ListingCardFavorite
+                  listing={item.listing}
+                  onDelete={handleRemoveFavorite}
+                />
+               </div>
+              ))}
+            </div>
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+              onItemsPerPageChange={(value) => {
+                setItemsPerPage(value);
+                setCurrentPage(1);
+              }}
+            />
           </div>
         )}
       </div>

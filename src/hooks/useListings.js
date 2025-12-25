@@ -110,6 +110,7 @@ export const useListings = () => {
 
     stats,
 
+    fetchListings,
     createListing,
     updateListing,
     deleteListing,

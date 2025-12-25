@@ -40,7 +40,7 @@ const Index = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { logChange, saveInitialSnapshot } = useChangeLog();
-  const { toggleFavorite, isFavorite } = useFavorites();
+  const { toggleFavorite, isFavorite, chan } = useFavorites();
 
   const {
     listings,
@@ -60,6 +60,7 @@ const Index = () => {
     totalPages,
     totalItems,
     stats,
+    fetchListings,
     createListing,
     updateListing,
     deleteListing,
@@ -194,12 +195,13 @@ const Index = () => {
     }
   };
 
-  const handleToggleFavorite = async (listingId) => {
+  const handleToggleFavorite = async (listing) => {
+    console.log(listing);
     try {
-      await toggleFavorite(listingId);
+      await toggleFavorite(listing);
       toast({
-        title: isFavorite(listingId) ? "Removed" : "Added",
-        description: isFavorite(listingId)
+        title: listing.is_favorite ? "Removed" : "Added",
+        description: listing.is_favorite
           ? "Removed from favorites"
           : "Added to favorites",
       });
@@ -268,7 +270,10 @@ const Index = () => {
               {/* View Mode Toggle */}
               <div className="flex items-center bg-muted rounded-lg p-1">
                 <button
-                  onClick={() => setViewMode("table")}
+                  onClick={() => {
+                    setViewMode("table");
+                    fetchListings();
+                  }}
                   className={`p-2 rounded-md transition-all ${
                     viewMode === "table"
                       ? "bg-card text-foreground shadow-sm"
@@ -278,7 +283,10 @@ const Index = () => {
                   <List className="w-5 h-5" />
                 </button>
                 <button
-                  onClick={() => setViewMode("cards")}
+                  onClick={() => {
+                    setViewMode("cards");
+                    fetchListings();
+                  }}
                   className={`p-2 rounded-md transition-all ${
                     viewMode === "cards"
                       ? "bg-card text-foreground shadow-sm"
@@ -388,14 +396,14 @@ const Index = () => {
                 }
                 isFavorite={isFavorite}
               />
-            ) : listings.length == 0 ? (
+            ) : listings.length === 0 ? (
               <div className="py-12 text-center text-muted-foreground">
                 No listings found
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {listings.map((listing, index) => (
-                  <div 
+                  <div
                     key={listing.id}
                     className="animate-slide-up"
                     style={{ animationDelay: `${index * 50}ms` }}
@@ -405,8 +413,9 @@ const Index = () => {
                       isEditor={isEditor || isAdmin}
                       onEdit={handleOpenEditModal}
                       onDelete={handleOpenDeleteModal}
-                      onToggleFavorite={isSubscriber ? handleToggleFavorite : undefined}
-                      isFavorite={isFavorite(listing.id)}
+                      onToggleFavorite={
+                        isSubscriber ? handleToggleFavorite : undefined
+                      }
                     />
                   </div>
                 ))}

@@ -1,49 +1,38 @@
 import { apiClient } from './apiClient';
 
 export const favoritesApi = {
-  getFavorites: async (userId) => {
+  getFavorites: async (page, page_size) => {
     try {
-      const response = await apiClient.get(`/users/${userId}/favorites`);
+      const response = await apiClient.get(`/favorites?page=${page}&page_size=${page_size}`);
       return response.data || response;
     } catch (error) {
-      if (error.status === 0) {
-        const stored = localStorage.getItem(`favorites_${userId}`);
-        return stored ? JSON.parse(stored) : [];
-      }
       throw error;
     }
   },
 
-  addFavorite: async (userId, listingId) => {
+  addFavorite: async (listingId) => {
     try {
-      const response = await apiClient.post(`/users/${userId}/favorites`, { listing_id: listingId });
+      const response = await apiClient.post(`/favorites/${listingId}`);
       return response.data || response;
     } catch (error) {
-      if (error.status === 0) {
-        const stored = localStorage.getItem(`favorites_${userId}`);
-        const favorites = stored ? JSON.parse(stored) : [];
-        if (!favorites.includes(listingId)) {
-          favorites.push(listingId);
-          localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
-        }
-        return favorites;
-      }
       throw error;
     }
   },
 
-  removeFavorite: async (userId, listingId) => {
+  removeFavorite: async (listingId) => {
     try {
-      const response = await apiClient.delete(`/users/${userId}/favorites/${listingId}`);
+      const response = await apiClient.delete(`/favorites/${listingId}`);
       return response.data || response;
     } catch (error) {
-      if (error.status === 0) {
-        const stored = localStorage.getItem(`favorites_${userId}`);
-        let favorites = stored ? JSON.parse(stored) : [];
-        favorites = favorites.filter(id => id !== listingId);
-        localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
-        return favorites;
-      }
+      throw error;
+    }
+  },
+
+  checkFavorite: async (listingId) => {
+    try {
+      const response = await apiClient.get(`/favorites/${listingId}/check`);
+      return response.data || response;
+    } catch (error) {
       throw error;
     }
   },

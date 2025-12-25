@@ -130,7 +130,6 @@ export default function ListingDetails() {
   const [error, setError] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [viewMode, setViewMode] = useState("table");
 
   const fetchListing = async () => {
     try {
@@ -259,30 +258,6 @@ export default function ListingDetails() {
                 </span>
               </div>
 
-              {/* View Mode Toggle */}
-              <div className="flex items-center bg-muted rounded-lg p-1">
-                <button
-                  onClick={() => setViewMode("table")}
-                  className={`p-2 rounded-md transition-all ${
-                    viewMode === "table"
-                      ? "bg-card text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <List className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => setViewMode("cards")}
-                  className={`p-2 rounded-md transition-all ${
-                    viewMode === "cards"
-                      ? "bg-card text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <LayoutGrid className="w-5 h-5" />
-                </button>
-              </div>
-
               {/* Subscriber Actions */}
               {isSubscriber && (
                 <>
@@ -323,39 +298,27 @@ export default function ListingDetails() {
                   </Button>
                 </>
               )}
-
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => navigate("/")}
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </Button>
+              {(isEditor || isAdmin) && (
+                <div>
+                  <Button onClick={handleOpenModal} className="btn-gradient">
+                    <Pen className="w-4 h-4 mr-2" />
+                    Edit Listing
+                  </Button>
+                </div>
+              )}
               <Button variant="outline" size="icon" onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />
               </Button>
             </div>
           </div>
         </div>
-      </header>
-      <header className="sticky flex justify-between items-center px-5 top-0 z-10 bg-gray-100 border-b">
-        <div className="px-6 py-4 flex items-center gap-4">
-          {/* <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-            <ArrowLeft className="w-5 h-5" />
-          </Button> */}
-
-          <div>
-            <h1 className="text-lg font-semibold">Listing Details</h1>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground">
-                ID: #{listing.id}
-              </span>
-              <StatusBadge status={listing.status} />
-            </div>
-          </div>
-        </div>
-        {/* Editor/Admin Actions */}
-        {(isEditor || isAdmin) && (
-          <div>
-            <Button onClick={handleOpenModal} className="btn-gradient">
-              <Pen className="w-4 h-4 mr-2" />
-              Edit Listing
-            </Button>
-          </div>
-        )}
       </header>
 
       {/* ===================== CONTENT ===================== */}

@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { User, Lock, Save, ArrowLeft } from 'lucide-react';
+import {
+  Building2,
+  LayoutGrid,
+  LogOut,
+  LayoutDashboard,
+  Heart,
+  User,
+  Lock,
+  Save
+} from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -10,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 
 const SubscriberProfile = () => {
-  const { user, updateProfile, changePassword } = useAuth();
+  const { user, updateProfile, isEditor, isSubscriber, isAdmin, changePassword, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -92,13 +101,119 @@ const SubscriberProfile = () => {
     setIsPasswordLoading(false);
   };
 
+  const getRoleBadge = () => {
+    if (isAdmin)
+      return {
+        label: "Admin",
+        className: "bg-destructive/20 text-destructive",
+      };
+    if (isEditor)
+      return { label: "Editor", className: "bg-accent/20 text-accent" };
+    return { label: "Subscriber", className: "bg-primary/20 text-primary" };
+  };
+
+  const roleBadge = getRoleBadge();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-2xl mx-auto">
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="outline" size="icon" onClick={() => navigate('/')}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border">
+              <div className="container mx-auto px-4 py-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <h1 className="text-xl font-bold font-display text-foreground">
+                        Listings Manager
+                      </h1>
+                      <p className="text-sm text-muted-foreground">BonMLS</p>
+                    </div>
+                  </div>
+      
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {/* User Info */}
+                    <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          isAdmin
+                            ? "bg-destructive"
+                            : isEditor
+                            ? "bg-accent"
+                            : "bg-primary"
+                        }`}
+                      />
+                      <span className="text-sm font-medium text-foreground">
+                        {user?.name}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full ${roleBadge.className}`}
+                      >
+                        {roleBadge.label}
+                      </span>
+                    </div>
+      
+                    {/* Subscriber Actions */}
+                    {isSubscriber && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => navigate("/favorites")}
+                        >
+                          <Heart className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => navigate("/profile")}
+                        >
+                          <User className="w-4 h-4" />
+                        </Button>
+                      </>
+                    )}
+      
+                    {/* Editor/Admin Actions */}
+                    {(isEditor || isAdmin) && (
+                      <>
+                        {/* <Button
+                          onClick={handleOpenCreateModal}
+                          className="btn-gradient"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Listing
+                        </Button> */}
+                        <Button
+                          variant="outline"
+                          onClick={() => navigate(isAdmin ? "/admin" : "/editor")}
+                          className="flex items-center gap-2"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                          Dashboard
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => navigate("/")}
+                    >
+                      <LayoutGrid className="w-4 h-4" />
+                    </Button>
+      
+                    <Button variant="outline" size="icon" onClick={handleLogout}>
+                      <LogOut className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </header>
+      <div className="max-w-2xl mx-auto py-2">
+        <div className="flex items-center gap-4 mb-2">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Profile Settings</h1>
             <p className="text-muted-foreground">Manage your account settings</p>

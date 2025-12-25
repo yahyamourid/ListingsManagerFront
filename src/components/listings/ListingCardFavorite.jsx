@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MapPin,
@@ -9,7 +9,7 @@ import {
   Pencil,
   Trash2,
   Heart,
-  MapPinHouse,
+  MapPinHouse
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -22,19 +22,11 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-export function ListingCard({
+export function ListingCardFavorite({
   listing,
-  isEditor,
-  onEdit,
   onDelete,
-  onToggleFavorite,
 }) {
-  const [localItem, setLocalItem] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    setLocalItem(listing);
-  }, [listing]);
+  const navigate = useNavigate();
 
   const priceChange =
     listing.initial_price && listing.current_price
@@ -46,29 +38,14 @@ export function ListingCard({
       : null;
 
   const handleCardClick = (e) => {
-    // Don't navigate if clicking on action buttons or links
     if (e.target.closest("button") || e.target.closest("a")) return;
     e.stopPropagation();
     window.open(`/details/${listing.id}`, "_blank");
   };
 
-  const handleHeartClick = async (e) => {
-    setSubmitting(true);
-    try {
-      await onToggleFavorite(localItem);
-      setLocalItem((prev) =>
-      prev ? { ...prev, is_favorite: !prev.is_favorite } : prev
-    );
-    } catch (error) {
-     
-    } finally {
-      setSubmitting(false)
-    }
-  };
-
   return (
-    <div className="listing-card cursor-pointer" onClick={handleCardClick}>
-      <div className="relative h-48 bg-muted">
+    <div className="listing-card cursor-pointer border " onClick={handleCardClick}>
+      <div className="relative h-35 bg-muted">
         {listing.image_listing ? (
           <img
             src={listing.image_listing}
@@ -83,11 +60,11 @@ export function ListingCard({
 
         <div className="absolute top-6 -left-9 -rotate-45 overflow-hidden">
           <span
-            className={`px-12 py-2 text-xs font-semibold rounded-full text-white uppercase ${
+            className={`px-14 py-2 text-xs font-semibold rounded-full text-white uppercase ${
               listing.status === "for sale" && "bg-green-600"
-            } ${listing.status === "pending" && "bg-yellow-600"} ${
-              listing.status === "sold" && "bg-red-600 "
-            }
+            } ${
+              listing.status === "pending" && "bg-yellow-600"
+            } ${listing.status === "sold" && "bg-red-600 "}
             `}
           >
             {listing.status}
@@ -95,22 +72,16 @@ export function ListingCard({
         </div>
 
         <div className="absolute top-3 right-3 flex gap-2">
-          {localItem && !isEditor  &&(
             <Button
               variant="ghost"
               size="icon"
-              className={`h-8 w-8 bg-card/90 backdrop-blur-sm ${
-                localItem.is_favorite ? "text-red-500" : "hover:text-red-500"
-              }`}
-              onClick={() => handleHeartClick()}
+              className="h-8 w-8 bg-card/90 backdrop-blur-sm text-destructive"
+              onClick={() => onDelete(listing.id)}
             >
               <Heart
-                className={`w-4 h-4 ${
-                  localItem.is_favorite ? "fill-current text-red-500" : ""
-                } ${submitting && "animate-pulse scale-125"}`}
+                className="w-4 h-4 fill-current text-red-500"
               />
             </Button>
-          )}
           {listing.zoning && (
             <span className="px-3 py-1 bg-card/90 backdrop-blur-sm text-foreground text-xs font-medium rounded-full">
               {listing.zoning}
@@ -181,29 +152,6 @@ export function ListingCard({
           <p className="text-xs text-muted-foreground mb-4">
             Source: {listing.listing_website}
           </p>
-        )}
-
-        {isEditor && (
-          <div className="flex items-center gap-2 pt-4 border-t border-border">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1"
-              onClick={() => onEdit(listing)}
-            >
-              <Pencil className="w-4 h-4 mr-2" />
-              Edit
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-              onClick={() => onDelete(listing)}
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete
-            </Button>
-          </div>
         )}
       </div>
     </div>

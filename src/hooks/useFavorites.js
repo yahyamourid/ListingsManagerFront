@@ -6,73 +6,78 @@ export const useFavorites = () => {
   const { user } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const fetchFavorites = useCallback(async () => {
-    if (!user?.id) {
-      setFavorites([]);
-      setLoading(false);
-      return;
-    }
+    if (!user?.id) return;
 
     try {
       setLoading(true);
-      const data = await favoritesApi.getFavorites(user.id);
-      setFavorites(data);
-    } catch (error) {
-      console.error('Error fetching favorites:', error);
+      setError(null);
+      const data = await favoritesApi.getFavorites(currentPage, itemsPerPage);
+      setFavorites(data.items);
+      setTotalItems(data.total);
+    } catch (err) {
+      setError(err.message || 'Error fetching favorites');
       setFavorites([]);
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, currentPage, itemsPerPage]);
 
   useEffect(() => {
     fetchFavorites();
   }, [fetchFavorites]);
 
   const addFavorite = async (listingId) => {
-    if (!user?.id) return;
-    
     try {
-      await favoritesApi.addFavorite(user.id, listingId);
-      setFavorites(prev => [...prev, listingId]);
-    } catch (error) {
-      console.error('Error adding favorite:', error);
-      throw error;
+      await favoritesApi.addFavorite(listingId);
+      fetchFavorites();
+    } catch (err) {
+      setError(err.message || 'Error adding favorite');
+      throw err;
     }
   };
 
   const removeFavorite = async (listingId) => {
     if (!user?.id) return;
-    
+
     try {
-      await favoritesApi.removeFavorite(user.id, listingId);
-      setFavorites(prev => prev.filter(id => id !== listingId));
-    } catch (error) {
-      console.error('Error removing favorite:', error);
-      throw error;
+      await favoritesApi.removeFavorite(listingId);
+      fetchFavorites();
+    } catch (err) {
+      setError(err.message || 'Error removing favorite');
+      throw err;
     }
   };
 
-  const toggleFavorite = async (listingId) => {
-    if (isFavorite(listingId)) {
-      await removeFavorite(listingId);
+  const toggleFavorite = async (listing) => {
+    if (listing.is_favorite) {
+      await removeFavorite(listing.id);
     } else {
-      await addFavorite(listingId);
+      await addFavorite(listing.id);
     }
-  };
-
-  const isFavorite = (listingId) => {
-    return favorites.includes(listingId);
   };
 
   return {
     favorites,
     loading,
+    currentPage,
+    itemsPerPage,
+    totalItems,
+    totalPages,
     addFavorite,
     removeFavorite,
     toggleFavorite,
-    isFavorite,
     refetch: fetchFavorites,
+    setCurrentPage,
+    setItemsPerPage,
+    setTotalItems,
   };
 };
