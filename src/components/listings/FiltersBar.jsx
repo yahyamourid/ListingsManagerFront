@@ -60,6 +60,7 @@ export function FiltersBar({
     { value: "qvillas", label: "QVillas" },
     { value: "real_estate_guy", label: "Real Estate Guy" },
     { value: "remax_bonaire", label: "Remax Bonaire" },
+    { value: "caribbeanhome", label: "Caribbean Home" },
     // add more anytime
   ];
   return (

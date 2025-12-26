@@ -12,7 +12,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-// Predefined listing websites
 const LISTING_WEBSITES = [
   { value: "sunbeltbonaire", label: "Sunbelt Realty" },
   { value: "harbourtown", label: "Harbour Town" },
@@ -21,7 +20,8 @@ const LISTING_WEBSITES = [
   { value: "qvillas", label: "QVillas" },
   { value: "real_estate_guy", label: "Real Estate Guy" },
   { value: "remax_bonaire", label: "Remax Bonaire" },
-  // add more anytime
+  { value: "caribbeanhome", label: "Caribbean Home" },
+
 ];
 
 const initialFormState = {
