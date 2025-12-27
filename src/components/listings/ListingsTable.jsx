@@ -142,20 +142,13 @@ export function ListingsTable({
                 style={{ animationDelay: `${index * 30}ms` }}
                 onClick={(e) => handleRowClick(listing, e)}
               >
-                <td className="px-4 py-4">
+                <td className="px-4 py-4 text-sm">
                   {formatDate(listing.updated_at)}
                 </td>
 
                 <td className="px-4 py-4">
                   <div className="flex items-center gap-3">
-                    {listing.image_listing && (
-                      <img
-                        src={listing.image_listing}
-                        alt=""
-                        className="w-10 h-10 rounded-lg object-cover"
-                      />
-                    )}
-                    <span className="truncate max-w-[180px]">
+                    <span className="truncate max-w-[250px]">
                       {listing.address || "-"}
                     </span>
                   </div>
