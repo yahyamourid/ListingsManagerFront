@@ -91,7 +91,7 @@ const Users = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [page, roleFilter]);
+  }, [page, roleFilter, itemsPerPage]);
 
   // Search with debounce
   useEffect(() => {
@@ -138,7 +138,7 @@ const Users = () => {
         });
         toast({
           title: "User created successfully",
-          description: "A temporary password has been sent to the user's email",
+          description: "An invitation link has been sent to the user's email",
         });
       }
       setIsModalOpen(false);
@@ -312,7 +312,7 @@ const Users = () => {
                               {user.role}
                             </span>
                           </SelectTrigger>
-                          {user.role != "superadmin" && (
+                          {(user.role != "superadmin") && (user.full_name != "cron-job") && (
                             <SelectContent>
                               <SelectItem value="subscriber">
                                 Subscriber
@@ -335,7 +335,8 @@ const Users = () => {
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        {user.role != "superadmin" ? (
+                        {user.role != "superadmin" &&
+                        user.full_name != "cron-job" ? (
                           <div className="">
                             <Button
                               variant="ghost"
@@ -383,18 +384,16 @@ const Users = () => {
                 </TableBody>
               </Table>
 
-              {totalPages > 1 && (
-                <div className="mt-4">
-                  <Pagination
-                    currentPage={page}
-                    totalPages={totalPages}
-                    totalItems={total}
-                    itemsPerPage={itemsPerPage}
-                    onPageChange={setPage}
-                    onItemsPerPageChange={setItemPerPagecChange}
-                  />
-                </div>
-              )}
+              <div className="mt-4">
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  totalItems={total}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setPage}
+                  onItemsPerPageChange={setItemPerPagecChange}
+                />
+              </div>
             </>
           )}
         </CardContent>
