@@ -108,7 +108,7 @@ const SubscriberFavorites = () => {
                   }`}
                 />
                 <span className="text-sm font-medium text-foreground">
-                  {user?.name}
+                  {user?.full_name}
                 </span>
                 <span
                   className={`text-xs px-2 py-0.5 rounded-full ${roleBadge.className}`}
@@ -164,6 +164,16 @@ const SubscriberFavorites = () => {
               >
                 <LayoutGrid className="w-4 h-4" />
               </Button>
+
+              {isEditor && (
+                <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate("/favorites")}
+                  >
+                    <Heart className="w-4 h-4" />
+                  </Button>
+              )}
 
               <Button variant="outline" size="icon" onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />

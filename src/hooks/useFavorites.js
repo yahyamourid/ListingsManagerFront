@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { favoritesApi } from '@/services/api';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState, useEffect, useCallback } from "react";
+import { favoritesApi } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const useFavorites = () => {
   const { user } = useAuth();
@@ -24,7 +24,7 @@ export const useFavorites = () => {
       setFavorites(data.items);
       setTotalItems(data.total);
     } catch (err) {
-      setError(err.message || 'Error fetching favorites');
+      setError(err.message || "Error fetching favorites");
       setFavorites([]);
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ export const useFavorites = () => {
       await favoritesApi.addFavorite(listingId);
       fetchFavorites();
     } catch (err) {
-      setError(err.message || 'Error adding favorite');
+      setError(err.message || "Error adding favorite");
       throw err;
     }
   };
@@ -50,9 +50,13 @@ export const useFavorites = () => {
 
     try {
       await favoritesApi.removeFavorite(listingId);
+      if (favorites.length === 1 && currentPage > 1) {
+        setCurrentPage((prev) => prev - 1);
+        return;
+      }
       fetchFavorites();
     } catch (err) {
-      setError(err.message || 'Error removing favorite');
+      setError(err.message || "Error removing favorite");
       throw err;
     }
   };

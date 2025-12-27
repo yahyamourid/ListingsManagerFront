@@ -95,7 +95,7 @@ export function ListingCard({
         </div>
 
         <div className="absolute top-3 right-3 flex gap-2">
-          {localItem && !isEditor  &&(
+          {localItem && onToggleFavorite  &&(
             <Button
               variant="ghost"
               size="icon"

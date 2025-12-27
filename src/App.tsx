@@ -94,6 +94,57 @@ const EditorRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Editor route - requires editor role (not admin)
+const SubscriberRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isSubscriber, isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Only allow editors, not admins (they have their own panel)
+  if (!isSubscriber) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const SubscriberOrEditorRoute = ({ children }: { children: React.ReactNode }) => {
+  const {
+    isSubscriber,
+    isEditor,
+    isAuthenticated,
+    loading
+  } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isSubscriber && !isEditor) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 // Public route - redirect if already authenticated
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -170,17 +221,17 @@ const App = () => (
             <Route
               path="/profile"
               element={
-                <ProtectedRoute>
+                <SubscriberRoute>
                   <SubscriberProfile />
-                </ProtectedRoute>
+                </SubscriberRoute>
               }
             />
             <Route
               path="/favorites"
               element={
-                <ProtectedRoute>
+                <SubscriberOrEditorRoute>
                   <SubscriberFavorites />
-                </ProtectedRoute>
+                </SubscriberOrEditorRoute>
               }
             />
 

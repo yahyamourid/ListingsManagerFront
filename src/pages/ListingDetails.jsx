@@ -313,6 +313,16 @@ export default function ListingDetails() {
                   </Button>
                 </div>
               )}
+
+              {isEditor && (
+                <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate("/favorites")}
+                  >
+                    <Heart className="w-4 h-4" />
+                  </Button>
+              )}
               <Button variant="outline" size="icon" onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />
               </Button>
