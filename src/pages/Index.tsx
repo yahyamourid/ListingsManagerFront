@@ -26,6 +26,7 @@ import { DeleteConfirmModal } from "@/components/listings/DeleteConfirmModal";
 import { ListingHistoryModal } from "@/components/listings/ListingHistoryModal";
 import { FiltersBar } from "@/components/listings/FiltersBar";
 import { Pagination } from "@/components/listings/Pagination";
+import formatDate from "@/utils/formateDate";
 
 const Index = () => {
   const { toast } = useToast();
@@ -65,6 +66,7 @@ const Index = () => {
     totalPages,
     totalItems,
     stats,
+    lastScraped,
     fetchListings,
     createListing,
     updateListing,
@@ -257,7 +259,7 @@ const Index = () => {
 
             <div className="flex items-center gap-3 flex-wrap">
               {/* User Info */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
+              <div className="flex items-center gap-2 px-5 py-3 bg-muted rounded-lg">
                 <div
                   className={`w-2 h-2 rounded-full ${
                     isAdmin

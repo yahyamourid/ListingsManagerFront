@@ -23,10 +23,11 @@ export const useListings = () => {
   // Optional stats
   const [stats, setStats] = useState(null);
 
+  const [lastScraped, setLastScraped] = useState("")
+
   const fetchListings = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
       const data = await listingsApi.searchListings({
         search: searchTerm,
@@ -87,6 +88,11 @@ export const useListings = () => {
     setCurrentPage(1);
   };
 
+  const getLastScraped = async ( )=> {
+    const data = await listingsApi.getLastScraped()
+    setLastScraped(data)
+  }
+
   return {
     listings,
     loading,
@@ -103,6 +109,8 @@ export const useListings = () => {
     setItemsPerPage,
     totalPages,
     totalItems,
+
+    lastScraped,
 
     sortField,
     sortDirection,

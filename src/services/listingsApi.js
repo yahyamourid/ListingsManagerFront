@@ -141,6 +141,16 @@ export const listingsApi = {
       throw error;
     }
   },
+
+
+  getLastScraped: async (id) => {
+    try {
+      const response = await apiClient.get("/listings/meta/last-scraped-date");
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export const getListing = listingsApi.getListing;

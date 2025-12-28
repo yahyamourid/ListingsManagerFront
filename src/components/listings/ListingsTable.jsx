@@ -9,7 +9,7 @@ import {
   History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import formatDate from "../../utils/formateDate";
+import formatDate from "@/utils/formateDate";
 
 const formatCurrency = (value) => {
   if (!value) return "-";
