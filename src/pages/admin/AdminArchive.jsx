@@ -238,7 +238,7 @@ const AdminArchive = () => {
                                 }`}
                             >
                               {/* ---- HISTORY HEADER ---- */}
-                              <div className="flex flex-col xl:flex-grow xl:justify-between xl:items-center gap-2">
+                              <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center gap-2">
                                 <div className="flex items-center gap-2">
                                   <span
                                     className={`px-2 py-1 rounded text-xs font-semibold ${style.bg} ${style.text}`}
