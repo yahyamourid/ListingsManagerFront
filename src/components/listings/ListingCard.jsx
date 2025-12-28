@@ -10,6 +10,7 @@ import {
   Trash2,
   Heart,
   MapPinHouse,
+  History
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -27,6 +28,7 @@ export function ListingCard({
   isEditor,
   onEdit,
   onDelete,
+  onListingChanges,
   onToggleFavorite,
 }) {
   const [localItem, setLocalItem] = useState(null);
@@ -57,12 +59,11 @@ export function ListingCard({
     try {
       await onToggleFavorite(localItem);
       setLocalItem((prev) =>
-      prev ? { ...prev, is_favorite: !prev.is_favorite } : prev
-    );
+        prev ? { ...prev, is_favorite: !prev.is_favorite } : prev
+      );
     } catch (error) {
-     
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
   };
 
@@ -95,7 +96,7 @@ export function ListingCard({
         </div>
 
         <div className="absolute top-3 right-3 flex gap-2">
-          {localItem && onToggleFavorite  &&(
+          {localItem && onToggleFavorite && (
             <Button
               variant="ghost"
               size="icon"
@@ -137,16 +138,29 @@ export function ListingCard({
             )}
           </div>
 
-          {listing.listing_link && (
-            <a
-              href={listing.listing_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+          <div className="flex items-center gap-2">
+            {listing.listing_link && (
+              <a
+                href={listing.listing_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+            {/*Show Changes button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                onListingChanges(listing);
+              }}
             >
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          )}
+              <History className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 text-muted-foreground mb-4">

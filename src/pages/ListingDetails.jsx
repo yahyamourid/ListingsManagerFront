@@ -18,12 +18,15 @@ import {
   LayoutDashboard,
   Heart,
   User,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listingsApi } from "@/services/api";
 import { MapView } from "@/components/listings/MapView";
 import { ListingFormModal } from "@/components/listings/ListingFormModal";
 import { useToast } from "@/hooks/use-toast";
+import { ListingHistoryModal } from "@/components/listings/ListingHistoryModal";
+
 /* ===================== HELPERS ===================== */
 
 const formatCurrency = (value) => {
@@ -131,6 +134,9 @@ export default function ListingDetails() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isOpenChanges, setOpenChanges] = useState(false);
+  const [selectedListing, setSelectedListing] = useState(null);
+
   const fetchListing = async () => {
     try {
       setLoading(true);
@@ -155,6 +161,7 @@ export default function ListingDetails() {
     logout();
     navigate("/login");
   };
+
   const handleFormSubmit = async (data) => {
     setIsSubmitting(true);
     try {
@@ -174,6 +181,10 @@ export default function ListingDetails() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleOpenChangesModal = () => {
+    setOpenChanges(true);
   };
 
   const getRoleBadge = () => {
@@ -316,12 +327,12 @@ export default function ListingDetails() {
 
               {isEditor && (
                 <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => navigate("/favorites")}
-                  >
-                    <Heart className="w-4 h-4" />
-                  </Button>
+                  variant="outline"
+                  size="icon"
+                  onClick={() => navigate("/favorites")}
+                >
+                  <Heart className="w-4 h-4" />
+                </Button>
               )}
               <Button variant="outline" size="icon" onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />
@@ -338,28 +349,41 @@ export default function ListingDetails() {
           <p className="text-4xl font-bold">{listing.page_title}</p>
 
           {/* PRICE */}
-          <div>
-            <div className="flex items-baseline gap-3">
-              <h2 className="text-4xl font-bold">
-                {formatCurrency(listing.current_price)}
-              </h2>
+          <div className="flex flex-col md:flex-row xl:flex-grow justify-center xl:justify-between xl:items-start gap-2">
+            <div className="flex flex-col">
+              <div className="flex items-baseline gap-3">
+                <h2 className="text-4xl font-bold">
+                  {formatCurrency(listing.current_price)}
+                </h2>
 
-              {priceChange && priceChange !== "0.0" && (
-                <span
-                  className={`text-sm font-medium ${
-                    priceChange < 0 ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {priceChange > 0 ? "+" : ""}
-                  {priceChange}%
-                </span>
-              )}
-            </div>
+                {priceChange && priceChange !== "0.0" && (
+                  <span
+                    className={`text-sm font-medium ${
+                      priceChange < 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {priceChange > 0 ? "+" : ""}
+                    {priceChange}%
+                  </span>
+                )}
+              </div>
 
-            <div className="flex items-center gap-2 text-muted-foreground mt-1">
-              <MapPin className="w-5 h-5" />
-              <span>{listing.address || "Address not available"}</span>
+              <div className="flex items-center gap-2 text-muted-foreground mt-1">
+                <MapPin className="w-5 h-5" />
+                <span>{listing.address || "Address not available"}</span>
+              </div>
             </div>
+            <button
+              className="flex items-center gap-2  px-3 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md text-white"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenChangesModal(listing);
+              }}
+            >
+              <History className="w-4 h-4" />
+              <p>View All Changes</p>
+            </button>
           </div>
 
           {/* QUICK STATS */}
@@ -466,6 +490,14 @@ export default function ListingDetails() {
         onSubmit={handleFormSubmit}
         listing={listing}
         isLoading={isSubmitting}
+      />
+
+      <ListingHistoryModal
+        isOpen={isOpenChanges}
+        onClose={() => {
+          setOpenChanges(false);
+        }}
+        listingId={id}
       />
     </div>
   );

@@ -8,6 +8,7 @@ import {
   Heart,
   User,
   LayoutDashboard,
+  Info,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,6 +23,7 @@ import { ListingCard } from "@/components/listings/ListingCard";
 import { ListingFormModal } from "@/components/listings/ListingFormModal";
 import { EditorFieldEditModal } from "@/components/listings/EditorFieldEditModal";
 import { DeleteConfirmModal } from "@/components/listings/DeleteConfirmModal";
+import { ListingHistoryModal } from "@/components/listings/ListingHistoryModal";
 import { FiltersBar } from "@/components/listings/FiltersBar";
 import { Pagination } from "@/components/listings/Pagination";
 
@@ -41,6 +43,9 @@ const Index = () => {
 
   const { logChange, saveInitialSnapshot } = useChangeLog();
   const { toggleFavorite, isFavorite, chan } = useFavorites();
+
+  const [isOpenChanges, setOpenChanges] = useState(false);
+  const [selectedListing, setSelectedListing] = useState(null);
 
   const {
     listings,
@@ -94,6 +99,11 @@ const Index = () => {
   const handleOpenDeleteModal = (listing) => {
     setDeletingListing(listing);
     setIsDeleteModalOpen(true);
+  };
+
+  const handleOpenChangesModal = (listing) => {
+    setSelectedListing(listing);
+    setOpenChanges(true);
   };
 
   const handleFormSubmit = async (data) => {
@@ -401,8 +411,9 @@ const Index = () => {
                 isEditor={isEditor || isAdmin}
                 onEdit={handleOpenEditModal}
                 onDelete={handleOpenDeleteModal}
+                onListingChanges={handleOpenChangesModal}
                 onToggleFavorite={
-                  (isSubscriber || isEditor) ? handleToggleFavorite : undefined
+                  isSubscriber || isEditor ? handleToggleFavorite : undefined
                 }
                 isFavorite={isFavorite}
               />
@@ -423,8 +434,11 @@ const Index = () => {
                       isEditor={isEditor || isAdmin}
                       onEdit={handleOpenEditModal}
                       onDelete={handleOpenDeleteModal}
+                      onListingChanges={handleOpenChangesModal}
                       onToggleFavorite={
-                        (isSubscriber || isEditor) ? handleToggleFavorite : undefined
+                        isSubscriber || isEditor
+                          ? handleToggleFavorite
+                          : undefined
                       }
                     />
                   </div>
@@ -483,6 +497,17 @@ const Index = () => {
         listing={deletingListing}
         isLoading={isSubmitting}
       />
+
+      {selectedListing && (
+        <ListingHistoryModal
+          isOpen={isOpenChanges}
+          onClose={() => {
+            setOpenChanges(false);
+            setSelectedListing(null);
+          }}
+          listingId={selectedListing.id}
+        />
+      )}
     </div>
   );
 };

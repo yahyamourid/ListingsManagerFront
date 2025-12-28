@@ -6,12 +6,7 @@ import formatDate from "../../utils/formateDate";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronDown,
-  ChevronUp,
-  History,
-  RefreshCw,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, History, RefreshCw } from "lucide-react";
 
 /* ---------------- CONSTANTS ---------------- */
 
@@ -95,7 +90,7 @@ const AdminArchive = () => {
 
       {/* ---------------- STATS ---------------- */}
       {stats && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
           <Card>
             <CardContent className="pt-4">
               <p className="text-2xl font-bold">{stats.total_all}</p>
@@ -172,7 +167,7 @@ const AdminArchive = () => {
                     className="cursor-pointer hover:bg-muted/40 transition"
                     onClick={() => toggleExpand(listing.id)}
                   >
-                    <div className="flex justify-between items-center">
+                    <div className="relative flex flex-col xl:flex-row gap-2 xl:justify-between xl:items-center">
                       <div>
                         <CardTitle className="text-base truncate">
                           {listing.address || "Unnamed listing"}
@@ -198,18 +193,18 @@ const AdminArchive = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(`/details/${listing.id}`, "_blank");
-                          }}
-                        >
-                          Details
-                        </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`/details/${listing.id}`, "_blank");
+                        }}
+                      >
+                        Details
+                      </Button>
 
+                      <div className="absolute -top-3 -right-3">
                         {isExpanded ? (
                           <ChevronUp className="w-5 h-5" />
                         ) : (
@@ -243,7 +238,7 @@ const AdminArchive = () => {
                                 }`}
                             >
                               {/* ---- HISTORY HEADER ---- */}
-                              <div className="flex justify-between items-center">
+                              <div className="flex flex-col xl:flex-grow xl:justify-between xl:items-center gap-2">
                                 <div className="flex items-center gap-2">
                                   <span
                                     className={`px-2 py-1 rounded text-xs font-semibold ${style.bg} ${style.text}`}
@@ -253,16 +248,14 @@ const AdminArchive = () => {
 
                                   <span
                                     className={`text-xs font-bold uppercase ${
-                                      isCron
-                                        ? "text-accent"
-                                        : "text-violet-600"
+                                      isCron ? "text-accent" : "text-violet-600"
                                     }`}
                                   >
                                     By {h.editor_full_name}
                                   </span>
                                 </div>
 
-                                <span className="text-xs text-muted-foreground">
+                                <span className="flex text-xs text-muted-foreground xl:items-end">
                                   {formatDate(h.changed_at)}
                                 </span>
                               </div>

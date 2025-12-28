@@ -25,28 +25,28 @@ const LISTING_WEBSITES = [
 ];
 
 const initialFormState = {
-  page_title: "",
-  date_first_listed: "",
-  listing_link: "",
-  latitude: "",
-  longitude: "",
-  address: "",
-  area: "",
-  initial_price: "",
-  current_price: "",
-  bedrooms: "",
-  bathrooms: "",
-  amenities: "",
-  listing_website: "",
-  building_footage: "",
-  lot_footage: "",
-  zoning_plan: "",
-  zoning_description: "",
-  sale_date: "",
-  sale_price: "",
-  image_listing: "",
-  status: "",
-  parcel_number: "",
+  page_title: null,
+  date_first_listed: null,
+  listing_link: null,
+  latitude: null,
+  longitude: null,
+  address: null,
+  area: null,
+  initial_price: null,
+  current_price: null,
+  bedrooms: null,
+  bathrooms: null,
+  amenities: null,
+  listing_website: null,
+  building_footage: null,
+  lot_footage: null,
+  zoning_plan: null,
+  zoning_description: null,
+  sale_date: null,
+  sale_price: null,
+  image_listing: null,
+  status: null,
+  parcel_number: null,
 };
 
 export function ListingFormModal({
@@ -62,28 +62,28 @@ export function ListingFormModal({
   useEffect(() => {
     if (listing) {
       setFormData({
-        page_title: listing.page_title || "",
-        date_first_listed: listing.date_first_listed || "",
-        listing_link: listing.listing_link || "",
-        latitude: listing.latitude || "",
-        longitude: listing.longitude || "",
-        address: listing.address || "",
-        area: listing.area || "",
-        initial_price: listing.initial_price || "",
-        current_price: listing.current_price || "",
-        bedrooms: listing.bedrooms || "",
-        bathrooms: listing.bathrooms || "",
-        amenities: listing.amenities ? listing.amenities.join(", ") : "",
-        listing_website: listing.listing_website || "",
-        building_footage: listing.building_footage || "",
-        lot_footage: listing.lot_footage || "",
-        zoning_plan: listing.zoning_plan || "",
-        zoning_description: listing.zoning_description || "",
-        sale_date: listing.sale_date || "",
-        sale_price: listing.sale_price || "",
-        image_listing: listing.image_listing || "",
-        status: listing.status || "",
-        parcel_number: listing.parcel_number || "",
+        page_title: listing.page_title || null,
+        date_first_listed: listing.date_first_listed || null,
+        listing_link: listing.listing_link || null,
+        latitude: listing.latitude || null,
+        longitude: listing.longitude || null,
+        address: listing.address || null,
+        area: listing.area || null,
+        initial_price: listing.initial_price || null,
+        current_price: listing.current_price || null,
+        bedrooms: listing.bedrooms || null,
+        bathrooms: listing.bathrooms || null,
+        amenities: listing.amenities ? listing.amenities.join(", ") : null,
+        listing_website: listing.listing_website || null,
+        building_footage: listing.building_footage || null,
+        lot_footage: listing.lot_footage || null,
+        zoning_plan: listing.zoning_plan || null,
+        zoning_description: listing.zoning_description || null,
+        sale_date: listing.sale_date || null,
+        sale_price: listing.sale_price || null,
+        image_listing: listing.image_listing || null,
+        status: listing.status || null,
+        parcel_number: listing.parcel_number || null,
       });
     } else {
       setFormData(initialFormState);
@@ -259,7 +259,7 @@ export function ListingFormModal({
                 name="initial_price"
                 type="number"
                 min="0"
-                value={formData.initial_price ?? ""}
+                value={formData.initial_price ?? null}
                 onChange={(e) => {
                   const value = e.target.value;
 
@@ -280,7 +280,7 @@ export function ListingFormModal({
                 name="current_price"
                 type="number"
                 min="0"
-                value={formData.current_price ?? ""}
+                value={formData.current_price ?? null}
                 onChange={(e) => {
                   const value = e.target.value;
                   setFormData({
@@ -301,7 +301,7 @@ export function ListingFormModal({
                 name="bedrooms"
                 type="number"
                 min="0"
-                value={formData.bedrooms ?? ""}
+                value={formData.bedrooms ?? null}
                 onChange={(e) => {
                   const value = e.target.value;
                   setFormData({
@@ -322,7 +322,7 @@ export function ListingFormModal({
                 type="number"
                 min="0"
                 step="0.5"
-                value={formData.bathrooms ?? ""}
+                value={formData.bathrooms ?? null}
                 onChange={(e) => {
                   const value = e.target.value;
                   setFormData({
@@ -418,7 +418,7 @@ export function ListingFormModal({
                 name="sale_price"
                 type="number"
                 min="0"
-                value={formData.sale_price ?? ""}
+                value={formData.sale_price ?? null}
                 onChange={(e) => {
                   const value = e.target.value;
                   setFormData({

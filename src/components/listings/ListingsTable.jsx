@@ -6,6 +6,7 @@ import {
   Pencil,
   Trash2,
   Heart,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import formatDate from "../../utils/formateDate";
@@ -50,6 +51,7 @@ export function ListingsTable({
   onEdit,
   onDelete,
   onToggleFavorite,
+  onListingChanges,
 }) {
   const [localListings, setLocalListings] = useState([]);
   const [currentId, setCurrentId] = useState(null);
@@ -160,13 +162,9 @@ export function ListingsTable({
 
                 <td className="px-4 py-4">{listing.bedrooms || "-"}</td>
                 <td className="px-4 py-4">{listing.bathrooms || "-"}</td>
-                <td className="px-4 py-4">
-                  {listing.building_footage || "-"}
-                </td>
+                <td className="px-4 py-4">{listing.building_footage || "-"}</td>
                 <td className="px-4 py-4">{listing.area || "-"}</td>
-                <td className="px-4 py-4">
-                  {listing.listing_website || "-"}
-                </td>
+                <td className="px-4 py-4">{listing.listing_website || "-"}</td>
 
                 <td className="px-4 py-4">
                   {listing.listing_link && (
@@ -184,6 +182,17 @@ export function ListingsTable({
                 {(isEditor || onToggleFavorite) && (
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
+                      {/*Show Changes button */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onListingChanges(listing);
+                        }}
+                      >
+                        <History className="w-4 h-4" />
+                      </Button>
                       {onToggleFavorite && (
                         <Button
                           variant="ghost"
@@ -194,9 +203,7 @@ export function ListingsTable({
                               ? "text-red-500"
                               : "hover:text-red-500"
                           }`}
-                          onClick={(e) =>
-                            handleFavoriteClick(listing, e)
-                          }
+                          onClick={(e) => handleFavoriteClick(listing, e)}
                         >
                           <Heart
                             className={`w-4 h-4 ${
