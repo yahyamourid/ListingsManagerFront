@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { listingsApi } from "@/services/listingsAPI";
+import { listingsApi } from "@/services/listingsApi";
 import { Button } from "@/components/ui/button";
 import { X, History} from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
