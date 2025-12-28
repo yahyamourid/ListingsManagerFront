@@ -17,7 +17,7 @@ export const useListingsWithHistory = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   // Sorting
-  const [sortField, setSortField] = useState('created_at');
+  const [sortField, setSortField] = useState('updated_at');
   const [sortDirection, setSortDirection] = useState('desc');
 
   // Extra stats from backend

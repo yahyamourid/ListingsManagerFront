@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,8 @@ export function FiltersBar({
   showFilters,
   onToggleFilters,
   isHistory,
+  sortDirection,
+  handleSortDirection,
 }) {
   const [localSearch, setLocalSearch] = useState(searchTerm || "");
 
@@ -28,7 +30,8 @@ export function FiltersBar({
     filters.bathrooms ||
     filters.listing_website ||
     filters.status ||
-    filters.is_modified;
+    filters.history_type;
+  filters.updated_at;
 
   const clearFilters = () => {
     onFiltersChange({
@@ -38,7 +41,8 @@ export function FiltersBar({
       bathrooms: "",
       listing_website: "",
       status: "",
-      is_modified: "",
+      history_type: "",
+      updated_at: "",
     });
   };
 
@@ -81,6 +85,18 @@ export function FiltersBar({
 
         <Button onClick={applySearch}>Search</Button>
 
+        {isHistory && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleSortDirection()}
+            className="flex items-center gap-2"
+          >
+            <ArrowUpDown className="w-4 h-4" />
+            {sortDirection === "asc" ? "Old Items" : "Recent Items"}
+          </Button>
+        )}
+
         <Button
           variant={showFilters ? "default" : "outline"}
           onClick={onToggleFilters}
@@ -111,9 +127,57 @@ export function FiltersBar({
 
           <div
             className={`grid grid-cols-1 sm:grid-cols-2 ${
-              isHistory ? "lg:grid-cols-7" : "lg:grid-cols-6"
+              isHistory ? "lg:grid-cols-4" : "lg:grid-cols-6"
             } gap-4`}
           >
+            {/* Updated At Filter (only for history) */}
+            {isHistory && (
+              <div className="">
+                <div>
+                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
+                  Updated Date
+                </label>
+                <Input
+                  type="date"
+                  value={filters.updated_at ?? ""}
+                  onChange={(e) =>
+                    onFiltersChange({
+                      ...filters,
+                      updated_at: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              </div>
+            )}
+            
+            {/* IsModifies */}
+            {isHistory && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
+                  Archive Type
+                </label>
+                <Select
+                  value={filters.history_type}
+                  onValueChange={(value) =>
+                    onFiltersChange({
+                      ...filters,
+                      history_type: value === "any" ? "" : value,
+                    })
+                  }
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="All" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">All</SelectItem>
+                    <SelectItem value="2">Modified Only</SelectItem>
+                    <SelectItem value="1">Created Only</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
             {/* Min Price */}
             <div>
               <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
@@ -265,32 +329,8 @@ export function FiltersBar({
               </Select>
             </div>
 
-            {/* IsModifies */}
-            {isHistory && (
-              <div>
-                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-                  Modification
-                </label>
-                <Select
-                  value={filters.is_modified}
-                  onValueChange={(value) =>
-                    onFiltersChange({
-                      ...filters,
-                      is_modified: value === "any" ? "" : value,
-                    })
-                  }
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue placeholder="All Listings" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="any">All Listings</SelectItem>
-                    <SelectItem value="true">Modified Only</SelectItem>
-                    <SelectItem value="false">Unchanged Only</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            
+            
           </div>
         </div>
       )}

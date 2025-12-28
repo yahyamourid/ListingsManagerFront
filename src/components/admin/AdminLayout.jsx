@@ -10,9 +10,9 @@ export const AdminLayout = () => {
   const navigate = useNavigate();
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background  overflow-x-hidden">
         <AdminSidebar />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col in-w-0 overflow-x-hidden">
           <header className="h-14 border-b border-border flex justify-between items-center px-4 bg-card">
             <div className="flex items-center">
               <SidebarTrigger />

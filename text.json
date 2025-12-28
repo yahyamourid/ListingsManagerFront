@@ -1,0 +1,32 @@
+[
+  [
+    { "attribute": "price", "new_value": 1950000.0, "old_value": 2000000.0 },
+    { "attribute": "price", "new_value": "for sale", "old_value": "pending" }
+  ],
+  [
+    { "attribute": "price", "new_value": 800000.0, "old_value": 9999999.0 },
+    { "attribute": "price", "new_value": "sold", "old_value": "for sale" }
+  ],
+  [
+    {
+      "attribute": "page_title",
+      "new_value": "La Palma",
+      "old_value": "La Palma x"
+    },
+    {
+      "attribute": "address",
+      "new_value": "La Palma",
+      "old_value": "La Palma e"
+    },
+    {
+      "attribute": "listing_website",
+      "new_value": "kwbonaire",
+      "old_value": "sunbeltbonaire"
+    },
+    {
+      "attribute": "current_price",
+      "new_value": 799999.0,
+      "old_value": 8000005.0
+    }
+  ]
+]

@@ -10,19 +10,31 @@ import {
   ChevronDown,
   ChevronUp,
   History,
-  DollarSign,
-  Tag,
-  ArrowUpDown,
   RefreshCw,
 } from "lucide-react";
-import { format } from "date-fns";
+
+/* ---------------- CONSTANTS ---------------- */
+
+const CHANGE_STYLE = {
+  create: {
+    bg: "bg-green-100",
+    text: "text-green-700",
+    label: "First Creation",
+  },
+  update: {
+    bg: "bg-amber-100",
+    text: "text-amber-700",
+    label: "Updated",
+  },
+};
+
+/* ---------------- COMPONENT ---------------- */
 
 const AdminArchive = () => {
   const {
     listings,
     loading,
     error,
-
     refetch,
 
     searchTerm,
@@ -37,9 +49,7 @@ const AdminArchive = () => {
     totalPages,
     totalItems,
 
-    sortField,
     sortDirection,
-    setSortField,
     setSortDirection,
 
     stats,
@@ -52,34 +62,38 @@ const AdminArchive = () => {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const handleSortDirection = () => {
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    setCurrentPage(1);
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    /* MAIN WRAPPER — PREVENT PAGE HORIZONTAL SCROLL */
+    <div className="w-full max-w-full overflow-x-hidden space-y-6">
+      {/* ---------------- HEADER ---------------- */}
       <div className="flex items-center justify-between">
-        <div className="">
+        <div>
           <h1 className="text-2xl font-bold">Listings Archive</h1>
           <p className="text-muted-foreground">
-            Listings with price & status history
+            Listings with full history tracking
           </p>
         </div>
-        {/* Reload */}
-        <div className="flex">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              currentPage != 1 ? setCurrentPage(1) : refetch();
-            }}
-          >
-            <RefreshCw
-              className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
-            />
-            Refresh
-          </Button>
-        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            currentPage !== 1 ? setCurrentPage(1) : refetch();
+          }}
+        >
+          <RefreshCw
+            className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+          />
+          Refresh
+        </Button>
       </div>
 
-      {/* Stats */}
+      {/* ---------------- STATS ---------------- */}
       {stats && (
         <div className="grid grid-cols-3 gap-4">
           <Card>
@@ -88,6 +102,7 @@ const AdminArchive = () => {
               <p className="text-sm text-muted-foreground">Total listings</p>
             </CardContent>
           </Card>
+
           <Card>
             <CardContent className="pt-4">
               <p className="text-2xl font-bold text-amber-500">
@@ -96,6 +111,7 @@ const AdminArchive = () => {
               <p className="text-sm text-muted-foreground">Modified</p>
             </CardContent>
           </Card>
+
           <Card>
             <CardContent className="pt-4">
               <p className="text-2xl font-bold text-green-500">
@@ -107,170 +123,220 @@ const AdminArchive = () => {
         </div>
       )}
 
-      {/* Filters & Sort */}
-      <div className="flex items-top gap-3 w-full">
-        <div className="flex w-11/12">
-          <FiltersBar
-            searchTerm={searchTerm}
-            onSearchChange={(v) => {
-              setSearchTerm(v);
-              setCurrentPage(1);
-            }}
-            filters={filters}
-            onFiltersChange={(f) => {
-              setFilters(f);
-              setCurrentPage(1);
-            }}
-            showFilters={showFilters}
-            onToggleFilters={() => setShowFilters((p) => !p)}
-            isHistory={true}
-          />
-        </div>
+      {/* ---------------- FILTERS ---------------- */}
+      <FiltersBar
+        searchTerm={searchTerm}
+        onSearchChange={(v) => {
+          setSearchTerm(v);
+          setCurrentPage(1);
+        }}
+        filters={filters}
+        onFiltersChange={(f) => {
+          setFilters(f);
+          setCurrentPage(1);
+        }}
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters((p) => !p)}
+        isHistory
+        sortDirection={sortDirection}
+        handleSortDirection={handleSortDirection}
+      />
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-            setCurrentPage(1);
-          }}
-          className="flex items-center gap-2 w-1/12"
-        >
-          <ArrowUpDown className="w-4 h-4" />
-          {sortDirection === "asc" ? "Old" : "New"}
-        </Button>
-      </div>
-
-      {/* Content */}
+      {/* ---------------- CONTENT ---------------- */}
       {loading ? (
-        <div className="flex items-center justify-center py-12">
+        <div className="flex justify-center py-12">
           <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <Card>
-          <CardContent className="pt-4">
+          <CardContent className="pt-4 space-y-4">
             {error && <p className="text-red-500">{error}</p>}
 
-            {!loading && listings.length === 0 && (
+            {listings.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <History className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 No listings found
               </div>
             )}
 
-            <div className="space-y-4">
-              {listings.map((listing) => {
-                const isExpanded = expanded[listing.id];
-                const hasHistory = listing.history?.length > 0;
+            {listings.map((listing) => {
+              const isExpanded = expanded[listing.id];
+              const updateCount =
+                listing.history?.filter((h) => h.change_type === "update")
+                  .length || 0;
 
-                return (
-                  <Card key={listing.id} className="border">
-                    <CardHeader
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => toggleExpand(listing.id)}
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <CardTitle className="text-base">
-                            {listing.address || "Unnamed listing"}
-                          </CardTitle>
-                          <div className="flex gap-2 mt-1">
-                            <Badge variant="outline">
-                              ${listing.current_price?.toLocaleString()}
-                            </Badge>
-                            <Badge
-                              variant="outline"
-                              className={
-                                hasHistory
-                                  ? "border-amber-500 text-amber-500"
-                                  : "border-green-500 text-green-500"
-                              }
-                            >
-                              {hasHistory
-                                ? `${listing.history.length} changes`
-                                : "No changes"}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
+              return (
+                <Card key={listing.id} className="border overflow-hidden">
+                  {/* -------- LISTING HEADER -------- */}
+                  <CardHeader
+                    className="cursor-pointer hover:bg-muted/40 transition"
+                    onClick={() => toggleExpand(listing.id)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <CardTitle className="text-base truncate">
+                          {listing.address || "Unnamed listing"}
+                        </CardTitle>
+
+                        <div className="flex gap-2 mt-2">
+                          <Badge variant="outline">
+                            ${listing.current_price?.toLocaleString()}
+                          </Badge>
+
+                          <Badge
                             variant="outline"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              window.open(`/details/${listing.id}`, "_blank");
-                            }}
+                            className={
+                              updateCount > 0
+                                ? "border-amber-500 text-amber-500"
+                                : "border-green-500 text-green-500"
+                            }
                           >
-                            Details
-                          </Button>
-                          {isExpanded ? (
-                            <ChevronUp className="w-5 h-5" />
-                          ) : (
-                            <ChevronDown className="w-5 h-5" />
-                          )}
+                            {updateCount > 0
+                              ? `${updateCount} updates`
+                              : "No updates"}
+                          </Badge>
                         </div>
                       </div>
-                    </CardHeader>
 
-                    {isExpanded && (
-                      <CardContent className="space-y-3">
-                        {hasHistory ? (
-                          listing.history.map((h) => (
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(`/details/${listing.id}`, "_blank");
+                          }}
+                        >
+                          Details
+                        </Button>
+
+                        {isExpanded ? (
+                          <ChevronUp className="w-5 h-5" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5" />
+                        )}
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  {/* -------- HISTORY -------- */}
+                  {isExpanded && (
+                    <CardContent className="space-y-4">
+                      {listing.history.length === 0 ? (
+                        <div className="text-center py-6 text-muted-foreground">
+                          <History className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                          No history available
+                        </div>
+                      ) : (
+                        listing.history.map((h) => {
+                          const style = CHANGE_STYLE[h.change_type];
+                          const isCron = h.editor_full_name === "cron-job";
+
+                          return (
                             <div
                               key={h.id}
-                              className="flex gap-3 p-3 border rounded-lg"
+                              className={`border rounded-xl p-4 space-y-3
+                                ${
+                                  isCron
+                                    ? "border-accent/30 bg-yellow-50/40"
+                                    : "border-violet-600/30 bg-violet-50/30"
+                                }`}
                             >
-                              {h.change_type === "price" ? (
-                                <div className="w-8 h-8 flex items-center justify-center rounded bg-muted">
-                                  <DollarSign className="w-4 h-4" />
+                              {/* ---- HISTORY HEADER ---- */}
+                              <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className={`px-2 py-1 rounded text-xs font-semibold ${style.bg} ${style.text}`}
+                                  >
+                                    {style.label}
+                                  </span>
+
+                                  <span
+                                    className={`text-xs font-bold uppercase ${
+                                      isCron
+                                        ? "text-accent"
+                                        : "text-violet-600"
+                                    }`}
+                                  >
+                                    By {h.editor_full_name}
+                                  </span>
                                 </div>
-                              ) : (
-                                <div className="w-8 h-8 flex items-center justify-center rounded bg-violet-300">
-                                  <Tag className="w-4 h-4" />
-                                </div>
+
+                                <span className="text-xs text-muted-foreground">
+                                  {formatDate(h.changed_at)}
+                                </span>
+                              </div>
+
+                              {/* ---- CREATE ---- */}
+                              {h.change_type === "create" && (
+                                <p className="text-sm text-muted-foreground italic">
+                                  Listing created by {h.editor_full_name}
+                                </p>
                               )}
 
-                              <div className="flex-1">
-                                <p className="text-sm font-medium">
-                                  {h.change_type === "price"
-                                    ? `Price: $${h.old_price} → $${h.new_price}`
-                                    : `Status: ${h.old_status} → ${h.new_status}`}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  Changed by{" "}
-                                  <span className="font-semibold text-foreground text-blue-600">
-                                    {h.editor_full_name}
-                                  </span>{" "}
-                                  at{" "}
-                                  {formatDate(h.changed_at)}
-                                </p>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="text-center py-6 text-muted-foreground">
-                            <History className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">
-                              No modifications recorded for this listing
-                            </p>
-                          </div>
-                        )}
-                      </CardContent>
-                    )}
-                  </Card>
-                );
-              })}
-            </div>
+                              {/* ---- UPDATE (ONLY THIS SCROLLS) ---- */}
+                              {h.change_type === "update" &&
+                                h.changes?.length > 0 && (
+                                  <div className="w-full max-w-full overflow-hidden">
+                                    <div
+                                      className="
+                                        flex gap-3
+                                        overflow-x-auto
+                                        max-w-full
+                                        pb-2
+                                        scrollbar-thin
+                                        scrollbar-thumb-muted-foreground/30
+                                      "
+                                    >
+                                      {h.changes.map((c, idx) => (
+                                        <div
+                                          key={idx}
+                                          className="
+                                            flex-shrink-0
+                                            w-[220px]
+                                            max-w-[220px]
+                                            border
+                                            rounded-lg
+                                            p-3
+                                            bg-muted/30
+                                            overflow-hidden
+                                          "
+                                        >
+                                          <p className="text-xs text-muted-foreground mb-1 truncate">
+                                            {c.attribute}
+                                          </p>
 
-            {/* Pagination */}
+                                          <p className="text-sm font-medium break-words">
+                                            <span className="line-through text-red-500 break-words">
+                                              {String(c.old_value)}
+                                            </span>
+                                            <span className="mx-1">→</span>
+                                            <span className="text-green-600 break-words">
+                                              {String(c.new_value)}
+                                            </span>
+                                          </p>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                            </div>
+                          );
+                        })
+                      )}
+                    </CardContent>
+                  )}
+                </Card>
+              );
+            })}
+
+            {/* ---------------- PAGINATION ---------------- */}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               totalItems={totalItems}
               itemsPerPage={itemsPerPage}
-              onPageChange={(page) => {
-                setCurrentPage(page);
-              }}
+              onPageChange={setCurrentPage}
               onItemsPerPageChange={(v) => {
                 setItemsPerPage(v);
                 setCurrentPage(1);
@@ -284,4 +350,3 @@ const AdminArchive = () => {
 };
 
 export default AdminArchive;
-
