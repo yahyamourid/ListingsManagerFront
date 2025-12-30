@@ -17,7 +17,7 @@ export const EditorLayout = () => {
             <div className="flex items-center">
               <SidebarTrigger />
               <span className="ml-3 font-semibold text-foreground">
-                Super Admin Dashboard
+                Editor Dashboard
               </span>
             </div>
             <Button variant="outline" size="icon" onClick={() => navigate("/")}>

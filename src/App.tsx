@@ -18,10 +18,10 @@ import AdminStatistics from "./pages/admin/AdminStatistics";
 import AdminArchive from "./pages/admin/AdminArchive";
 import AdminHistory from "./pages/admin/AdminHistory";
 import AdminProfile from "./pages/admin/AdminProfile";
+import AdminScrapers from "./pages/admin/AdminScrapers"
 import { EditorLayout } from "./components/editor/EditorLayout";
 import EditorDashboard from "./pages/editor/EditorDashboard";
-import EditorListings from "./pages/editor/EditorListings";
-import EditorStatistics from "./pages/editor/EditorStatistics";
+import EditorScrapers from "./pages/editor/EditorScrapers";
 import EditorProfile from "./pages/editor/EditorProfile";
 import SubscriberProfile from "./pages/subscriber/SubscriberProfile";
 import SubscriberFavorites from "./pages/subscriber/SubscriberFavorites";
@@ -249,6 +249,7 @@ const App = () => (
               {/* <Route path="listings" element={<EditorListings />} /> */}
               {/* <Route path="statistics" element={<EditorStatistics />} /> */}
               <Route path="profile" element={<EditorProfile />} />
+              <Route path="scrapers" element={<EditorScrapers />} />
             </Route>
 
             {/* Admin Routes */}
@@ -267,6 +268,7 @@ const App = () => (
               {/* <Route path="history" element={<AdminHistory />} /> */}
               {/* <Route path="statistics" element={<AdminStatistics />} /> */}
               <Route path="profile" element={<AdminProfile />} />
+              <Route path="scrapers" element={<AdminScrapers />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

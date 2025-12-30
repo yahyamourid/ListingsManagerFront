@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Users, Building2, BarChart3, LogOut, Archive, History, User } from 'lucide-react';
+import { LayoutDashboard, Users, Building2, BarChart3, LogOut, Archive, History, User , BotMessageSquare} from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,7 @@ const menuItems = [
   // { title: 'History', url: '/admin/history', icon: History },
   // { title: 'Statistics', url: '/admin/statistics', icon: BarChart3 },
   { title: 'Profile', url: '/admin/profile', icon: User },
+  { title: 'Scrapers', url: '/admin/scrapers', icon: BotMessageSquare },
 ];
 
 export const AdminSidebar = () => {

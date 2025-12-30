@@ -9,6 +9,7 @@ import {
   User,
   LayoutDashboard,
   Info,
+  Hourglass,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,6 +27,7 @@ import { DeleteConfirmModal } from "@/components/listings/DeleteConfirmModal";
 import { ListingHistoryModal } from "@/components/listings/ListingHistoryModal";
 import { FiltersBar } from "@/components/listings/FiltersBar";
 import { Pagination } from "@/components/listings/Pagination";
+import { scrapersApi } from "@/services/scrapersApi";
 import formatDate from "@/utils/formateDate";
 
 const Index = () => {
@@ -48,6 +50,8 @@ const Index = () => {
   const [isOpenChanges, setOpenChanges] = useState(false);
   const [selectedListing, setSelectedListing] = useState(null);
 
+  const [lastScraped, setLastScraped] = useState(null);
+
   const {
     listings,
     loading,
@@ -66,7 +70,6 @@ const Index = () => {
     totalPages,
     totalItems,
     stats,
-    lastScraped,
     fetchListings,
     createListing,
     updateListing,
@@ -80,11 +83,17 @@ const Index = () => {
         saveInitialSnapshot(listing);
       });
     }
+    getLastScraped();
   }, [listings, saveInitialSnapshot]);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const getLastScraped = async () => {
+    const result = await scrapersApi.getLastScraped();
+    setLastScraped(result.date_scraped);
   };
 
   const handleOpenCreateModal = () => {
@@ -257,7 +266,17 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-4 flex-wrap">
+              {/* Last scrape */}
+              {lastScraped && (
+                <div className="flex items-center gap-1 text-xs bg-muted px-4 py-1.5 rounded-lg">
+                  <Hourglass className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-muted-foreground font-semibold ">Last Scraping</p>
+                    <p className="text-foreground">{formatDate(lastScraped)}</p>
+                  </div>
+                </div>
+              )}
               {/* User Info */}
               <div className="flex items-center gap-2 px-5 py-3 bg-muted rounded-lg">
                 <div
