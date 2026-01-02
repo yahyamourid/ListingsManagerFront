@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
-import { listingsApi } from '@/services/api';
+import { useEffect, useState, useCallback } from "react";
+import { listingsApi } from "@/services/api";
 
 export const useListingsWithHistory = () => {
   const [listings, setListings] = useState([]);
@@ -7,7 +7,7 @@ export const useListingsWithHistory = () => {
   const [error, setError] = useState(null);
 
   // Search & filters
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({});
 
   // Pagination
@@ -17,8 +17,8 @@ export const useListingsWithHistory = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   // Sorting
-  const [sortField, setSortField] = useState('updated_at');
-  const [sortDirection, setSortDirection] = useState('desc');
+  const [sortField, setSortField] = useState("updated_at");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   // Extra stats from backend
   const [stats, setStats] = useState(null);
@@ -46,7 +46,7 @@ export const useListingsWithHistory = () => {
         total_not_modified: res.total_not_modified,
       });
     } catch (err) {
-      setError(err.message || 'Failed to load listings');
+      setError(err.message || "Failed to load listings");
     } finally {
       setLoading(false);
     }
@@ -61,10 +61,14 @@ export const useListingsWithHistory = () => {
 
   const refetch = () => {
     fetchListings();
-  }
+  };
   useEffect(() => {
     fetchListings();
   }, [fetchListings]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filters]);
 
   return {
     listings,

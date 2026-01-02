@@ -30,8 +30,8 @@ export function FiltersBar({
     filters.bathrooms ||
     filters.listing_website ||
     filters.status ||
-    filters.history_type;
-  filters.updated_at;
+    filters.history_type ||
+    filters.updated_at;
 
   const clearFilters = () => {
     onFiltersChange({
@@ -134,23 +134,23 @@ export function FiltersBar({
             {isHistory && (
               <div className="">
                 <div>
-                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-                  Updated Date
-                </label>
-                <Input
-                  type="date"
-                  value={filters.updated_at ?? ""}
-                  onChange={(e) =>
-                    onFiltersChange({
-                      ...filters,
-                      updated_at: e.target.value,
-                    })
-                  }
-                />
-              </div>
+                  <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
+                    Updated Date
+                  </label>
+                  <Input
+                    type="date"
+                    value={filters.updated_at ?? ""}
+                    onChange={(e) =>
+                      onFiltersChange({
+                        ...filters,
+                        updated_at: e.target.value,
+                      })
+                    }
+                  />
+                </div>
               </div>
             )}
-            
+
             {/* IsModifies */}
             {isHistory && (
               <div>
@@ -328,9 +328,6 @@ export function FiltersBar({
                 </SelectContent>
               </Select>
             </div>
-
-            
-            
           </div>
         </div>
       )}
