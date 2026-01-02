@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
-import { listingsApi } from '../services/api';
+import { useEffect, useState, useCallback } from "react";
+import { listingsApi } from "../services/api";
 
 export const useListings = () => {
   const [listings, setListings] = useState([]);
@@ -7,7 +7,7 @@ export const useListings = () => {
   const [error, setError] = useState(null);
 
   // Filters & search
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({});
 
   // Pagination
@@ -17,8 +17,8 @@ export const useListings = () => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Sorting
-  const [sortField, setSortField] = useState('date_created');
-  const [sortDirection, setSortDirection] = useState('desc');
+  const [sortField, setSortField] = useState("date_created");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   // Optional stats
   const [stats, setStats] = useState(null);
@@ -40,7 +40,7 @@ export const useListings = () => {
       setTotalItems(data.total);
       setStats(data.stats || null);
     } catch (err) {
-      setError(err.message || 'Failed to load listings');
+      setError(err.message || "Failed to load listings");
     } finally {
       setLoading(false);
     }
@@ -52,6 +52,10 @@ export const useListings = () => {
     sortField,
     sortDirection,
   ]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filters]);
 
   useEffect(() => {
     fetchListings();
@@ -78,14 +82,13 @@ export const useListings = () => {
 
   const handleSort = (field) => {
     if (field === sortField) {
-      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
     setCurrentPage(1);
   };
-
 
   return {
     listings,
