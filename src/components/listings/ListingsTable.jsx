@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import formatDate from "@/utils/formateDate";
 
 const formatCurrency = (value) => {
-  if (!value) return "-";
+  // if (!value) return "-";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -160,8 +160,8 @@ export function ListingsTable({
                   {formatCurrency(listing.current_price)}
                 </td>
 
-                <td className="px-4 py-4">{listing.bedrooms || "-"}</td>
-                <td className="px-4 py-4">{listing.bathrooms || "-"}</td>
+                <td className="px-4 py-4">{listing.bedrooms}</td>
+                <td className="px-4 py-4">{listing.bathrooms}</td>
                 <td className="px-4 py-4">{listing.building_footage || "-"}</td>
                 <td className="px-4 py-4">{listing.area || "-"}</td>
                 <td className="px-4 py-4">{listing.listing_website || "-"}</td>
