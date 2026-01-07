@@ -10,7 +10,9 @@ import {
   Trash2,
   Heart,
   MapPinHouse,
-  History
+  History,
+  Archive,
+  ArchiveRestore,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -30,6 +32,7 @@ export function ListingCard({
   onDelete,
   onListingChanges,
   onToggleFavorite,
+  onArchive,
 }) {
   const [localItem, setLocalItem] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -208,7 +211,7 @@ export function ListingCard({
               <Pencil className="w-4 h-4 mr-2" />
               Edit
             </Button>
-            <Button
+            {/* <Button
               variant="outline"
               size="sm"
               className="flex-1 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
@@ -216,6 +219,27 @@ export function ListingCard({
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Delete
+            </Button> */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex-1 hover:bg-white/10 hover:text-accent hover:border hover:border-accent"
+              onClick={(e) => {
+                e.stopPropagation();
+                onArchive(listing);
+              }}
+            >
+              {listing.is_archived ? (
+                <>
+                  <ArchiveRestore className="w-4 h-4" />
+                  Restore
+                </>
+              ) : (
+                <>
+                  <Archive className="w-4 h-4" />
+                  Archive
+                </>
+              )}
             </Button>
           </div>
         )}

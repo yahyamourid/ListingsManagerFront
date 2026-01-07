@@ -7,6 +7,8 @@ import {
   Trash2,
   Heart,
   History,
+  Archive,
+  ArchiveRestore,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import formatDate from "@/utils/formateDate";
@@ -50,6 +52,7 @@ export function ListingsTable({
   isEditor,
   onEdit,
   onDelete,
+  onArchive,
   onToggleFavorite,
   onListingChanges,
 }) {
@@ -226,7 +229,7 @@ export function ListingsTable({
                             <Pencil className="w-4 h-4" />
                           </Button>
 
-                          <Button
+                          {/* <Button
                             variant="ghost"
                             size="icon"
                             onClick={(e) => {
@@ -235,6 +238,21 @@ export function ListingsTable({
                             }}
                           >
                             <Trash2 className="w-4 h-4" />
+                          </Button> */}
+
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onArchive(listing);
+                            }}
+                          >
+                            {listing.is_archived ? (
+                              <ArchiveRestore className="w-4 h-4" />
+                            ) : (
+                              <Archive className="w-4 h-4" />
+                            )}
                           </Button>
                         </>
                       )}

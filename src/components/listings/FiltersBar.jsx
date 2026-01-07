@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Search, SlidersHorizontal, X, ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -20,6 +21,7 @@ export function FiltersBar({
   isHistory,
   sortDirection,
   handleSortDirection,
+  isEditor = false,
 }) {
   const [localSearch, setLocalSearch] = useState(searchTerm || "");
 
@@ -31,7 +33,8 @@ export function FiltersBar({
     filters.listing_website ||
     filters.status ||
     filters.history_type ||
-    filters.updated_at;
+    filters.updated_at ||
+    filters.archived === true;
 
   const clearFilters = () => {
     onFiltersChange({
@@ -43,6 +46,7 @@ export function FiltersBar({
       status: "",
       history_type: "",
       updated_at: "",
+      archived: true,
     });
   };
 
@@ -127,7 +131,11 @@ export function FiltersBar({
 
           <div
             className={`grid grid-cols-1 sm:grid-cols-2 ${
-              isHistory ? "lg:grid-cols-4" : "lg:grid-cols-6"
+              isHistory
+                ? "lg:grid-cols-4"
+                : isEditor
+                ? "lg:grid-cols-7"
+                : "lg:grid-cols-6"
             } gap-4`}
           >
             {/* Updated At Filter (only for history) */}
@@ -331,6 +339,28 @@ export function FiltersBar({
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Archived toggle */}
+            {isEditor && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
+                  Archive
+                </label>
+                <div className="flex items-center mx-auto rounded-lg border border-border bg-background px-3 py-2">
+                  <Switch
+                    checked={Boolean(filters.archive)}
+                    disabled={!isEditor}
+                    onCheckedChange={(checked) =>
+                      isEditor &&
+                      onFiltersChange({
+                        ...filters,
+                        archive: checked,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

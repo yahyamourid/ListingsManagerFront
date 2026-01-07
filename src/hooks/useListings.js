@@ -75,6 +75,18 @@ export const useListings = () => {
     return updated;
   };
 
+  const archiveListing = async (id) => {
+    const archived = await listingsApi.archiveListing(id);
+    fetchListings();
+    // return archived;
+  }
+
+  const restoreListing = async (id) => {
+    const restored = await listingsApi.restoreListing(id);
+    fetchListings();
+    // return restored;
+  }
+
   const deleteListing = async (id) => {
     await listingsApi.deleteListing(id);
     fetchListings();
@@ -117,5 +129,7 @@ export const useListings = () => {
     createListing,
     updateListing,
     deleteListing,
+    archiveListing,
+    restoreListing,
   };
 };

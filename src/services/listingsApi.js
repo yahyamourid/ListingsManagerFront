@@ -113,12 +113,22 @@ export const listingsApi = {
    * Archive listing (soft delete)
    * POST /listings/{id}/archive
    */
-  archiveListing: async (id, reason = null) => {
+  archiveListing: async (id) => {
     try {
-      const response = await apiClient.post(
-        `/listings/${id}/archive`,
-        reason ? { reason } : null
-      );
+      const response = await apiClient.post(`/listings/${id}/archive`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /**
+   * Restore listing (soft delete)
+   * POST /listings/{id}/restore
+   */
+  restoreListing: async (id) => {
+    try {
+      const response = await apiClient.post(`/listings/${id}/restore`);
       return response.data;
     } catch (error) {
       throw error;

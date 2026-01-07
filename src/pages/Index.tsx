@@ -24,6 +24,7 @@ import { ListingCard } from "@/components/listings/ListingCard";
 import { ListingFormModal } from "@/components/listings/ListingFormModal";
 import { EditorFieldEditModal } from "@/components/listings/EditorFieldEditModal";
 import { DeleteConfirmModal } from "@/components/listings/DeleteConfirmModal";
+import { ArchiveConfirmModal } from "@/components/listings/ArchiveConfirmModal";
 import { ListingHistoryModal } from "@/components/listings/ListingHistoryModal";
 import { FiltersBar } from "@/components/listings/FiltersBar";
 import { Pagination } from "@/components/listings/Pagination";
@@ -40,8 +41,10 @@ const Index = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isEditorEditModalOpen, setIsEditorEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
   const [editingListing, setEditingListing] = useState(null);
   const [deletingListing, setDeletingListing] = useState(null);
+  const [archivingListing, setArchivingListing] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { logChange, saveInitialSnapshot } = useChangeLog();
@@ -74,6 +77,8 @@ const Index = () => {
     createListing,
     updateListing,
     deleteListing,
+    archiveListing,
+    restoreListing,
   } = useListings();
 
   // Save initial snapshots for all listings
@@ -107,10 +112,15 @@ const Index = () => {
     setIsFormModalOpen(true);
   };
 
-  const handleOpenDeleteModal = (listing) => {
+const handleOpenDeleteModal = (listing) => {
     setDeletingListing(listing);
     setIsDeleteModalOpen(true);
   };
+
+  const handleOpenArchiveModal = (listing) => {
+    setArchivingListing(listing);
+    setIsArchiveModalOpen(true);
+  }
 
   const handleOpenChangesModal = (listing) => {
     setSelectedListing(listing);
@@ -209,6 +219,37 @@ const Index = () => {
       toast({
         title: "Error",
         description: err.message || "Failed to delete listing",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleArchiveConfirm = async () => {
+    if (!archivingListing) return;
+
+    setIsSubmitting(true);
+    try {
+      if (archivingListing.is_archived) {
+        await restoreListing(archivingListing.id);
+        toast({
+          title: "Success",
+          description: "Listing restored successfully",
+        });
+      } else {
+        await archiveListing(archivingListing.id);
+        toast({
+          title: "Success",
+          description: "Listing archived successfully",
+        });
+      }
+      setIsArchiveModalOpen(false);
+      setArchivingListing(null);
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to archive listing",
         variant: "destructive",
       });
     } finally {
@@ -401,6 +442,7 @@ const Index = () => {
             onFiltersChange={setFilters}
             showFilters={showFilters}
             onToggleFilters={() => setShowFilters(!showFilters)}
+            isEditor={isEditor || isAdmin}
           />
         </div>
 
@@ -432,6 +474,7 @@ const Index = () => {
                 isEditor={isEditor || isAdmin}
                 onEdit={handleOpenEditModal}
                 onDelete={handleOpenDeleteModal}
+                onArchive={handleOpenArchiveModal}
                 onListingChanges={handleOpenChangesModal}
                 onToggleFavorite={
                   isSubscriber || isEditor ? handleToggleFavorite : undefined
@@ -456,6 +499,7 @@ const Index = () => {
                       onEdit={handleOpenEditModal}
                       onDelete={handleOpenDeleteModal}
                       onListingChanges={handleOpenChangesModal}
+                      onArchive={handleOpenArchiveModal}
                       onToggleFavorite={
                         isSubscriber || isEditor
                           ? handleToggleFavorite
@@ -516,6 +560,17 @@ const Index = () => {
         }}
         onConfirm={handleDeleteConfirm}
         listing={deletingListing}
+        isLoading={isSubmitting}
+      />
+
+      <ArchiveConfirmModal
+        isOpen={isArchiveModalOpen}
+        onClose={() => {
+          setIsArchiveModalOpen(false);
+          setArchivingListing(null);
+        }}
+        onConfirm={handleArchiveConfirm}
+        listing={archivingListing}
         isLoading={isSubmitting}
       />
 
