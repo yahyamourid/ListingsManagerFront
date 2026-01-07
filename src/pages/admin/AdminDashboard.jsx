@@ -63,7 +63,7 @@ const AdminDashboard = () => {
               <h2 className="text-l font-semibold text-muted-foreground">
                 Users Statistics
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(userStats).map(([key, value], index) => (
                   <Card key={key} className="bg-card">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -93,7 +93,7 @@ const AdminDashboard = () => {
               <h2 className="text-l font-semibold text-muted-foreground">
                 Listings Statistics
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(listingStats).map(([key, value], index) => (
                   <Card key={key} className="bg-card">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
