@@ -16,6 +16,16 @@ const CHANGE_STYLE = {
     text: "text-amber-700",
     label: "Updated",
   },
+    archive: {
+    bg: "bg-red-100",
+    text: "text-red-700",
+    label: "Archived",
+  },
+  restore: {
+    bg: "bg-sky-100",
+    text: "text-sky-700",
+    label: "Restored",
+  },
 };
 
 export function ListingHistoryModal({ isOpen, onClose, listingId }) {
