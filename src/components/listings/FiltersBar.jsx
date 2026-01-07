@@ -34,7 +34,7 @@ export function FiltersBar({
     filters.status ||
     filters.history_type ||
     filters.updated_at ||
-    filters.archived === true;
+    filters.archive === true;
 
   const clearFilters = () => {
     onFiltersChange({
@@ -46,7 +46,7 @@ export function FiltersBar({
       status: "",
       history_type: "",
       updated_at: "",
-      archived: true,
+      archive: false,
     });
   };
 
