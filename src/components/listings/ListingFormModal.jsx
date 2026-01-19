@@ -21,7 +21,6 @@ const LISTING_WEBSITES = [
   { value: "real_estate_guy", label: "Real Estate Guy" },
   { value: "remax_bonaire", label: "Remax Bonaire" },
   { value: "caribbeanhome", label: "Caribbean Home" },
-
 ];
 
 const initialFormState = {
@@ -104,13 +103,13 @@ export function ListingFormModal({
       longitude: formData.longitude ? parseFloat(formData.longitude) : null,
       initial_price: formData.initial_price
         ? parseFloat(formData.initial_price)
-        : null,
+        : 0,
       current_price: formData.current_price
         ? parseFloat(formData.current_price)
-        : null,
-      bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
-      bathrooms: formData.bathrooms ? parseFloat(formData.bathrooms) : null,
-      sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null,
+        : 0,
+      bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : 0,
+      bathrooms: formData.bathrooms ? parseFloat(formData.bathrooms) : 0,
+      sale_price: formData.sale_price ? parseFloat(formData.sale_price) : 0,
       amenities: formData.amenities
         ? formData.amenities
             .split(",")
@@ -201,26 +200,40 @@ export function ListingFormModal({
             </div>
 
             {/* Listing Website */}
-            <div>
-              <Label htmlFor="listing_website">Listing Website</Label>
-              <Select
-                value={formData.listing_website}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, listing_website: value }))
-                }
-              >
-                <SelectTrigger className="bg-background mt-1.5">
-                  <SelectValue placeholder="Select website" />
-                </SelectTrigger>
-                <SelectContent>
-                  {LISTING_WEBSITES.map((site) => (
-                    <SelectItem key={site.value} value={site.value}>
-                      {site.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {isEditing ? (
+              <div>
+                <Label htmlFor="listing_website">Listing Website</Label>
+                <Input
+                  id="listing_website"
+                  name="listing_website"
+                  value={formData.listing_website}
+                  placeholder="https://..."
+                  className="mt-1.5"
+                  disabled={isEditing}
+                />
+              </div>
+            ) : (
+              <div>
+                <Label htmlFor="listing_website">Listing Website</Label>
+                <Select
+                  value={formData.listing_website}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, listing_website: value }))
+                  }
+                >
+                  <SelectTrigger className="bg-background mt-1.5">
+                    <SelectValue placeholder="Select website" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {LISTING_WEBSITES.map((site) => (
+                      <SelectItem key={site.value} value={site.value}>
+                        {site.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {/* Latitude / Longitude */}
             <div>
@@ -499,8 +512,8 @@ export function ListingFormModal({
               {isLoading
                 ? "Saving..."
                 : isEditing
-                ? "Update Listing"
-                : "Create Listing"}
+                  ? "Update Listing"
+                  : "Create Listing"}
             </Button>
           </div>
         </form>

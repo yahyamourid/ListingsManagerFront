@@ -29,11 +29,12 @@ import { ListingHistoryModal } from "@/components/listings/ListingHistoryModal";
 
 /* ===================== HELPERS ===================== */
 
-const formatCurrency = (value) => {
+const formatCurrency = (value, currency = "USD") => {
   if (value === null || value === undefined) return "-";
+
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: currency === "EUR" ? "EUR" : "USD",
     maximumFractionDigits: 0,
   }).format(value);
 };
@@ -255,8 +256,8 @@ export default function ListingDetails() {
                     isAdmin
                       ? "bg-destructive"
                       : isEditor
-                      ? "bg-accent"
-                      : "bg-primary"
+                        ? "bg-accent"
+                        : "bg-primary"
                   }`}
                 />
                 <span className="text-sm font-medium text-foreground">
@@ -352,9 +353,18 @@ export default function ListingDetails() {
           <div className="flex flex-col md:flex-row xl:flex-grow justify-center xl:justify-between xl:items-start gap-2">
             <div className="flex flex-col">
               <div className="flex items-baseline gap-3">
-                <h2 className="text-4xl font-bold">
-                  {formatCurrency(listing.current_price)}
-                </h2>
+                <div className="">
+                  <p className="text-4xl font-bold">
+                    {formatCurrency(listing.current_price)}
+                  </p>
+                  {listing.euro_price !== null &&
+                    listing.euro_price !== undefined &&
+                    listing.euro_price !== 0 && (
+                      <p className="text-xl font-bold text-muted-foreground">
+                        ({formatCurrency(listing.euro_price, "EUR")})
+                      </p>
+                    )}
+                </div>
 
                 {priceChange && priceChange !== "0.0" && (
                   <span
