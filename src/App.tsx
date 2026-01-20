@@ -16,6 +16,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminListings from "./pages/admin/AdminListings";
 import AdminStatistics from "./pages/admin/AdminStatistics";
 import AdminArchive from "./pages/admin/AdminArchive";
+import AdminSoldListings from "./pages/admin/AdminSoldListings"
 import AdminHistory from "./pages/admin/AdminHistory";
 import AdminProfile from "./pages/admin/AdminProfile";
 import AdminScrapers from "./pages/admin/AdminScrapers"
@@ -246,6 +247,7 @@ const App = () => (
             >
               <Route index element={<AdminDashboard />} />
               <Route path="archive" element={<AdminArchive />} />
+              <Route path="sold" element={<AdminSoldListings />} />
               {/* <Route path="listings" element={<EditorListings />} /> */}
               {/* <Route path="statistics" element={<EditorStatistics />} /> */}
               <Route path="profile" element={<EditorProfile />} />
@@ -265,6 +267,7 @@ const App = () => (
               <Route path="users" element={<AdminUsers />} />
               {/* <Route path="listings" element={<AdminListings />} /> */}
               <Route path="archive" element={<AdminArchive />} />
+              <Route path="sold" element={<AdminSoldListings />} />
               {/* <Route path="history" element={<AdminHistory />} /> */}
               {/* <Route path="statistics" element={<AdminStatistics />} /> */}
               <Route path="profile" element={<AdminProfile />} />

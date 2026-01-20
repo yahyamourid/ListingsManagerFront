@@ -89,7 +89,7 @@ const Index = () => {
       });
     }
     getLastScraped();
-  }, [listings, saveInitialSnapshot]);
+  }, [saveInitialSnapshot]);
 
   const handleLogout = () => {
     logout();

@@ -1,14 +1,21 @@
 import { useEffect, useState, useCallback } from "react";
 import { listingsApi } from "../services/api";
 
-export const useListings = () => {
+export const useListings = (isSoldMode = false) => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Filters & search
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState(
+    isSoldMode
+      ? {
+          status: "sold",
+          sold: true,
+        }
+      : {},
+  );
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +24,7 @@ export const useListings = () => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Sorting
-  const [sortField, setSortField] = useState("date_created");
+  const [sortField, setSortField] = useState("updated_at");
   const [sortDirection, setSortDirection] = useState("desc");
 
   // Optional stats
@@ -79,13 +86,13 @@ export const useListings = () => {
     const archived = await listingsApi.archiveListing(id);
     fetchListings();
     // return archived;
-  }
+  };
 
   const restoreListing = async (id) => {
     const restored = await listingsApi.restoreListing(id);
     fetchListings();
     // return restored;
-  }
+  };
 
   const deleteListing = async (id) => {
     await listingsApi.deleteListing(id);
@@ -100,6 +107,10 @@ export const useListings = () => {
       setSortDirection("asc");
     }
     setCurrentPage(1);
+  };
+
+  const refetch = () => {
+    fetchListings();
   };
 
   return {
@@ -131,5 +142,7 @@ export const useListings = () => {
     deleteListing,
     archiveListing,
     restoreListing,
+
+    refetch
   };
 };

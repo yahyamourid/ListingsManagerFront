@@ -22,16 +22,19 @@ export function FiltersBar({
   sortDirection,
   handleSortDirection,
   isEditor = false,
+  isSoldMode = false,
 }) {
   const [localSearch, setLocalSearch] = useState(searchTerm || "");
 
   const hasActiveFilters =
     filters.min_price ||
     filters.max_price ||
+    filters.sold_min_price ||
+    filters.sold_max_price ||
     filters.bedrooms ||
     filters.bathrooms ||
     filters.listing_website ||
-    filters.status ||
+    (isSoldMode ? false : filters.status) ||
     filters.history_type ||
     filters.updated_at ||
     filters.archive === true;
@@ -40,10 +43,12 @@ export function FiltersBar({
     onFiltersChange({
       min_price: "",
       max_price: "",
+      sold_min_price: "",
+      sold_max_price: "",
       bedrooms: "",
       bathrooms: "",
       listing_website: "",
-      status: "",
+      status: isSoldMode ? "sold" : "",
       history_type: "",
       updated_at: "",
       archive: false,
@@ -135,8 +140,10 @@ export function FiltersBar({
               isHistory
                 ? "lg:grid-cols-4"
                 : isEditor
-                ? "lg:grid-cols-7"
-                : "lg:grid-cols-6"
+                  ? isSoldMode
+                    ? "lg:grid-cols-6"
+                    : "lg:grid-cols-7"
+                  : "lg:grid-cols-6"
             } gap-4`}
           >
             {/* Updated At Filter (only for history) */}
@@ -190,19 +197,19 @@ export function FiltersBar({
             {/* Min Price */}
             <div>
               <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-                Min Price
+                {isSoldMode && "Sale"} Min Price
               </label>
               <Input
                 type="number"
                 placeholder="0"
                 min="0"
-                value={filters.min_price ?? ""}
+                value={(isSoldMode ? filters.sold_min_price : filters.min_price) ?? ""}
                 onChange={(e) => {
                   const value = e.target.value;
 
                   onFiltersChange({
                     ...filters,
-                    min_price: value.startsWith("-") ? "" : value,
+                    [isSoldMode ? "sold_min_price" : "min_price"]: value.startsWith("-") ? "" : value,
                   });
                 }}
               />
@@ -211,19 +218,19 @@ export function FiltersBar({
             {/* Max Price */}
             <div>
               <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-                Max Price
+                {isSoldMode && "Sale"} Max Price
               </label>
               <Input
                 type="number"
                 placeholder="No limit"
                 min="0"
-                value={filters.max_price ?? ""}
+                value={(isSoldMode ? filters.sold_max_price : filters.max_price) ?? ""}
                 onChange={(e) => {
                   const value = e.target.value;
 
                   onFiltersChange({
                     ...filters,
-                    max_price: value.startsWith("-") ? "" : value,
+                    [isSoldMode ? "sold_max_price" : "max_price"]: value.startsWith("-") ? "" : value,
                   });
                 }}
               />
@@ -316,30 +323,32 @@ export function FiltersBar({
             </div>
 
             {/* Status */}
-            <div>
-              <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-                Status
-              </label>
-              <Select
-                value={filters.status}
-                onValueChange={(value) =>
-                  onFiltersChange({
-                    ...filters,
-                    status: value === "any" ? "" : value,
-                  })
-                }
-              >
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Any" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="any">Any</SelectItem>
-                  <SelectItem value="for sale">FOR SALE</SelectItem>
-                  <SelectItem value="pending">PENDING</SelectItem>
-                  <SelectItem value="sold">SOLD</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {!isSoldMode && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
+                  Status
+                </label>
+                <Select
+                  value={filters.status}
+                  onValueChange={(value) =>
+                    onFiltersChange({
+                      ...filters,
+                      status: value === "any" ? "" : value,
+                    })
+                  }
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="for sale">FOR SALE</SelectItem>
+                    <SelectItem value="pending">PENDING</SelectItem>
+                    <SelectItem value="sold">SOLD</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {/* Archived toggle */}
             {isEditor && (

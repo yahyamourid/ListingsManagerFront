@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Building2, BarChart3, LogOut, User, Settings, Archive, BotMessageSquare } from 'lucide-react';
+import { LayoutDashboard, Building2, BarChart3, LogOut, User, Settings, Archive, BotMessageSquare, ShoppingCart } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 const menuItems = [
   { title: 'Dashboard', url: '/editor', icon: LayoutDashboard },
   { title: 'Archive', url: '/editor/archive', icon: Archive },
+  { title: 'Sold Listings', url: '/editor/sold', icon: ShoppingCart },
   // { title: 'Listings', url: '/editor/listings', icon: Building2 },
   // { title: 'Statistics', url: '/editor/statistics', icon: BarChart3 },
   { title: 'Profile', url: '/editor/profile', icon: User },
