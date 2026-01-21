@@ -26,6 +26,7 @@ import { MapView } from "@/components/listings/MapView";
 import { ListingFormModal } from "@/components/listings/ListingFormModal";
 import { useToast } from "@/hooks/use-toast";
 import { ListingHistoryModal } from "@/components/listings/ListingHistoryModal";
+import { CoordinatesMapModal } from "@/components/listings/CoordinatesMapModal";
 
 /* ===================== HELPERS ===================== */
 
@@ -133,6 +134,7 @@ export default function ListingDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isOpenChanges, setOpenChanges] = useState(false);
@@ -184,6 +186,23 @@ export default function ListingDetails() {
     }
   };
 
+  const handleSaveCoordinates = async (listing, coordinates) => {
+    try {
+      await listingsApi.updateListing(listing.id, coordinates);
+      toast({
+        title: "Success",
+        description: "Coordinates updated successfully",
+      });
+      fetchListing();
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to update coordinates",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleOpenChangesModal = () => {
     setOpenChanges(true);
   };
@@ -224,10 +243,10 @@ export default function ListingDetails() {
   const priceChange =
     listing.initial_price && listing.current_price
       ? (
-          ((listing.current_price - listing.initial_price) /
-            listing.initial_price) *
-          100
-        ).toFixed(1)
+        ((listing.current_price - listing.initial_price) /
+          listing.initial_price) *
+        100
+      ).toFixed(1)
       : null;
 
   return (
@@ -252,13 +271,12 @@ export default function ListingDetails() {
               {/* User Info */}
               <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
                 <div
-                  className={`w-2 h-2 rounded-full ${
-                    isAdmin
-                      ? "bg-destructive"
-                      : isEditor
-                        ? "bg-accent"
-                        : "bg-primary"
-                  }`}
+                  className={`w-2 h-2 rounded-full ${isAdmin
+                    ? "bg-destructive"
+                    : isEditor
+                      ? "bg-accent"
+                      : "bg-primary"
+                    }`}
                 />
                 <span className="text-sm font-medium text-foreground">
                   {user?.name}
@@ -325,6 +343,15 @@ export default function ListingDetails() {
                   </Button>
                 </div>
               )}
+               {(isEditor || isAdmin) && (
+                  <Button variant="outline" size="icon"
+                    // className="h-6 w-6 ml-2 text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsMapModalOpen(true)}
+                    title="Edit Coordinates"
+                  >
+                    <MapPin className="w-3 h-3" />
+                  </Button>
+                )}
 
               {isEditor && (
                 <Button
@@ -368,9 +395,8 @@ export default function ListingDetails() {
 
                 {priceChange && priceChange !== "0.0" && (
                   <span
-                    className={`text-sm font-medium ${
-                      priceChange < 0 ? "text-green-600" : "text-red-600"
-                    }`}
+                    className={`text-sm font-medium ${priceChange < 0 ? "text-green-600" : "text-red-600"
+                      }`}
                   >
                     {priceChange > 0 ? "+" : ""}
                     {priceChange}%
@@ -459,11 +485,9 @@ export default function ListingDetails() {
 
               <div className="absolute top-7 -left-9 -rotate-45 overflow-hidden">
                 <span
-                  className={`px-14 py-4 text-sm font-semibold rounded-full text-white uppercase ${
-                    listing.status === "for sale" && "bg-green-600"
-                  } ${listing.status === "pending" && "bg-yellow-600"} ${
-                    listing.status === "sold" && "bg-red-600 "
-                  }
+                  className={`px-14 py-4 text-sm font-semibold rounded-full text-white uppercase ${listing.status === "for sale" && "bg-green-600"
+                    } ${listing.status === "pending" && "bg-yellow-600"} ${listing.status === "sold" && "bg-red-600 "
+                    }
             `}
                 >
                   {listing.status}
@@ -508,6 +532,13 @@ export default function ListingDetails() {
           setOpenChanges(false);
         }}
         listingId={id}
+      />
+
+      <CoordinatesMapModal
+        isOpen={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        listing={listing}
+        onSave={handleSaveCoordinates}
       />
     </div>
   );

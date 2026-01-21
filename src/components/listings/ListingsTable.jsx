@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import formatDate from "@/utils/formateDate";
+import { MapPin } from "lucide-react";
 
 const formatCurrency = (value) => {
   // if (!value) return "-";
@@ -55,6 +56,7 @@ export function ListingsTable({
   onArchive,
   onToggleFavorite,
   onListingChanges,
+  onOpenMap,
 }) {
   const [localListings, setLocalListings] = useState([]);
   const [currentId, setCurrentId] = useState(null);
@@ -255,6 +257,21 @@ export function ListingsTable({
                             )}
                           </Button>
                         </>
+                      )}
+                      
+                      {/* Map Button */}
+                      {(isEditor && onOpenMap) && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenMap(listing);
+                            }}
+                            title="Edit Coordinates"
+                        >
+                            <MapPin className="w-4 h-4" />
+                        </Button>
                       )}
                     </div>
                   </td>

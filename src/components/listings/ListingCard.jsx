@@ -33,6 +33,7 @@ export function ListingCard({
   onListingChanges,
   onToggleFavorite,
   onArchive,
+  onOpenMap,
 }) {
   const [localItem, setLocalItem] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -44,10 +45,10 @@ export function ListingCard({
   const priceChange =
     listing.initial_price && listing.current_price
       ? (
-          ((listing.current_price - listing.initial_price) /
-            listing.initial_price) *
-          100
-        ).toFixed(1)
+        ((listing.current_price - listing.initial_price) /
+          listing.initial_price) *
+        100
+      ).toFixed(1)
       : null;
 
   const handleCardClick = (e) => {
@@ -87,11 +88,9 @@ export function ListingCard({
 
         <div className="absolute top-6 -left-9 -rotate-45 overflow-hidden">
           <span
-            className={`px-12 py-2 text-xs font-semibold rounded-full text-white uppercase ${
-              listing.status === "for sale" && "bg-green-600"
-            } ${listing.status === "pending" && "bg-yellow-600"} ${
-              listing.status === "sold" && "bg-red-600 "
-            }
+            className={`px-12 py-2 text-xs font-semibold rounded-full text-white uppercase ${listing.status === "for sale" && "bg-green-600"
+              } ${listing.status === "pending" && "bg-yellow-600"} ${listing.status === "sold" && "bg-red-600 "
+              }
             `}
           >
             {listing.status}
@@ -103,15 +102,13 @@ export function ListingCard({
             <Button
               variant="ghost"
               size="icon"
-              className={`h-8 w-8 bg-card/90 backdrop-blur-sm ${
-                localItem.is_favorite ? "text-red-500" : "hover:text-red-500"
-              }`}
+              className={`h-8 w-8 bg-card/90 backdrop-blur-sm ${localItem.is_favorite ? "text-red-500" : "hover:text-red-500"
+                }`}
               onClick={() => handleHeartClick()}
             >
               <Heart
-                className={`w-4 h-4 ${
-                  localItem.is_favorite ? "fill-current text-red-500" : ""
-                } ${submitting && "animate-pulse scale-125"}`}
+                className={`w-4 h-4 ${localItem.is_favorite ? "fill-current text-red-500" : ""
+                  } ${submitting && "animate-pulse scale-125"}`}
               />
             </Button>
           )}
@@ -131,9 +128,8 @@ export function ListingCard({
             </p>
             {priceChange && priceChange !== "0.0" && (
               <p
-                className={`text-xs font-medium ${
-                  Number(priceChange) < 0 ? "text-success" : "text-destructive"
-                }`}
+                className={`text-xs font-medium ${Number(priceChange) < 0 ? "text-success" : "text-destructive"
+                  }`}
               >
                 {Number(priceChange) > 0 ? "+" : ""}
                 {priceChange}% from initial
@@ -163,6 +159,20 @@ export function ListingCard({
             >
               <History className="w-4 h-4" />
             </Button>
+            {/* Map Button */}
+            {(isEditor && onOpenMap) && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenMap(listing);
+                }}
+                title="Edit Coordinates"
+              >
+                <MapPin className="w-4 h-4" />
+              </Button>
+            )}
           </div>
         </div>
 

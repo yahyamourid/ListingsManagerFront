@@ -1,33 +1,56 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+import { GoogleMap, MarkerF, InfoWindowF } from "@react-google-maps/api";
+import { useState } from "react";
 
-// Fix default marker icons
-import "leaflet/dist/leaflet.css";
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-});
+export function MapView({
+  latitude,
+  longitude,
+  address,
+  mapContainerStyle = { width: "100%", height: "320px" }, // default size
+  zoom = 15,
+}) {
+  const [markerPosition, setMarkerPosition] = useState(
+    latitude && longitude ? { lat: latitude, lng: longitude } : null
+  );
+  const [infoOpen, setInfoOpen] = useState(false);
 
-export function MapView({ latitude, longitude, address }) {
   if (!latitude || !longitude) return null;
+
+  const coordinates = { lat: latitude, lng: longitude };
+
+  const mapOptions = {
+    mapTypeId: "hybrid",
+    disableDefaultUI: true,
+    zoomControl: true,
+    clickableIcons: false,
+    streetViewControl: false,
+    mapTypeControl: false,
+  };
 
   return (
     <div className="z-10 w-full h-80 rounded-xl overflow-hidden border border-border mt-5">
-      <MapContainer
-        center={[latitude, longitude]}
-        zoom={15}
-        style={{ height: "100%", width: "100%" }}
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={coordinates}
+        zoom={zoom}
+        onLoad={() => console.log("Map Loaded")}
+        onUnmount={() => console.log("Map Unmounted")}
+        options={mapOptions}
+        onClick={() => setInfoOpen(false)}
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="© OpenStreetMap"
-        />
-        <Marker position={[latitude, longitude]}>
-          <Popup>{address || "Property Location"}</Popup>
-        </Marker>
-      </MapContainer>
+        {markerPosition && (
+          <MarkerF
+            position={markerPosition}
+            draggable={true}
+            onClick={() => setInfoOpen(!infoOpen)}
+          >
+            {infoOpen && (
+              <InfoWindowF onCloseClick={() => setInfoOpen(false)}>
+                <div>{address || "Property Location"}</div>
+              </InfoWindowF>
+            )}
+          </MarkerF>
+        )}
+      </GoogleMap>
     </div>
   );
 }
