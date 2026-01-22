@@ -377,7 +377,7 @@ export default function ListingDetails() {
           <p className="text-4xl font-bold">{listing.page_title}</p>
 
           {/* PRICE */}
-          <div className="flex flex-col md:flex-row xl:flex-grow justify-center xl:justify-between xl:items-start gap-2">
+          <div className="flex flex-col xl:flex-row justify-center xl:justify-between xl:items-start gap-2">
             <div className="flex flex-col">
               <div className="flex items-baseline gap-3">
                 <div className="">

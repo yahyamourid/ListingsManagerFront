@@ -59,7 +59,7 @@ export function SoldListingTable({
   };
 
   return (
-    <div className="bg-card rounded-xl shadow-[var(--shadow-card)] overflow-hidden border border-border">
+    <div className="bg-card rounded-xl shadow-[var(--shadow-card)] overflow-hidden border border-border whitespace-nowrap">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
