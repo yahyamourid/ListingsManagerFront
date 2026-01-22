@@ -44,7 +44,7 @@ export function SoldListingCard({ listing, onListingChanges }) {
   };
 
   return (
-    <div className="listing-card cursor-pointer" onClick={handleCardClick}>
+    <div className="listing-card cursor-pointer border shadow-md" onClick={handleCardClick}>
       <div className="relative h-48 bg-muted">
         {listing.image_listing ? (
           <img

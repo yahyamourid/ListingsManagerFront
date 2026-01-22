@@ -107,7 +107,7 @@ export function ListingsTable({
       : "transition-transform duration-200 hover:scale-110";
 
   return (
-    <div className="bg-card rounded-xl shadow-[var(--shadow-card)] overflow-hidden border border-border">
+    <div className="bg-card rounded-xl shadow-[var(--shadow-card)] overflow-hidden border border-border whitespace-nowrap">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -149,7 +149,7 @@ export function ListingsTable({
                 style={{ animationDelay: `${index * 30}ms` }}
                 onClick={(e) => handleRowClick(listing, e)}
               >
-                <td className="px-4 py-4 text-sm">
+                <td className="px-4 py-4 text-sm ">
                   {formatDate(listing.updated_at)}
                 </td>
 
@@ -167,8 +167,8 @@ export function ListingsTable({
 
                 <td className="px-4 py-4">{listing.bedrooms}</td>
                 <td className="px-4 py-4">{listing.bathrooms}</td>
-                <td className="px-4 py-4">{listing.building_footage || "-"}</td>
-                <td className="px-4 py-4">{listing.area || "-"}</td>
+                <td className="px-4 py-4 ">{listing.building_footage || "-"}</td>
+                <td className="px-4 py-4 ">{listing.area || "-"}</td>
                 <td className="px-4 py-4">{listing.listing_website || "-"}</td>
 
                 <td className="px-4 py-4">

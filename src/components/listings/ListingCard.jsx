@@ -72,7 +72,7 @@ export function ListingCard({
   };
 
   return (
-    <div className="listing-card cursor-pointer" onClick={handleCardClick}>
+    <div className="listing-card cursor-pointer border shadow-md hover:border-accent hover:bg-accent/10" onClick={handleCardClick}>
       <div className="relative h-48 bg-muted">
         {listing.image_listing ? (
           <img
@@ -185,19 +185,19 @@ export function ListingCard({
 
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
           {listing.bedrooms !== null && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <BedDouble className="w-4 h-4" />
               <span>{listing.bedrooms} beds</span>
             </div>
           )}
           {listing.bathrooms !== null && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <Bath className="w-4 h-4" />
               <span>{listing.bathrooms} baths</span>
             </div>
           )}
           {listing.area && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <MapPinHouse className="w-4 h-4" />
               <span>{listing.area}</span>
             </div>
