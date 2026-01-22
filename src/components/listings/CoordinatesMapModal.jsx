@@ -507,8 +507,8 @@ export function CoordinatesMapModal({ isOpen, onClose, listing, onSave }) {
 
       <div
         className={cn(
-          "relative bg-card rounded-2xl shadow-xl flex flex-col",
-          isFullScreen ? "fixed inset-0" : "w-full max-w-5xl h-[90vh] p-6",
+          "relative bg-card rounded-2xl shadow-xl flex flex-col ",
+          isFullScreen ? "fixed inset-0 " : "w-full max-w-5xl h-[90vh] p-6",
         )}
       >
         {!isFullScreen && (
@@ -522,9 +522,17 @@ export function CoordinatesMapModal({ isOpen, onClose, listing, onSave }) {
           </div>
         )}
 
-        {!isFullScreen && renderInputs()}
+       <div
+  className={cn(
+    "flex absolute bottom-4 left-32 right-32 bg-card px-8 py-3 rounded-xl shadow-lg z-50",
+    !isFullScreen && "static"
+  )}
+>
+  {renderInputs()}
+</div>
 
-        <div className="flex-1 mt-4 rounded-xl overflow-hidden">
+
+        <div className={cn("flex-1 z-10", isFullScreen ? "" : "rounded-xl overflow-hidden mt-4")}>
           <GoogleMap
             mapContainerStyle={{ width: "100%", height: "100%" }}
             center={validCoordinates ?? DEFAULT_CENTER}

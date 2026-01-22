@@ -64,6 +64,8 @@ const Index = () => {
   const [hoveredListingId, setHoveredListingId] = useState(null);
   const [mapReady, setMapReady] = useState(false);
   const [showMap, setShowMap] = useState(true);
+  const [mapCenter, setMapCenter] = useState({ lat: 12.155256231290371, lng: -68.26788999190961 });
+  const [mapZoom, setMapZoom] = useState(12);
 
   const [lastScraped, setLastScraped] = useState(null);
 
@@ -118,7 +120,7 @@ const Index = () => {
   }, [viewMode, setItemsPerPage, setFilters]);
 
   const handleMapBoundsChange = (polygon) => {
-    if (viewMode === 'geo' && mapReady) {
+    if (viewMode === 'geo' && mapReady && showMap) {
       setFilters(prev => {
         if (prev.polygon === polygon) return prev;
         return { ...prev, polygon };
@@ -596,21 +598,23 @@ const Index = () => {
                 </div>
 
                 {/* Sticky Map Area */}
-                {showMap && (
-                  <div className="hidden lg:block lg:w-[50%] flex-1 animate-in slide-in-from-right-10 duration-300">
-                    <div className="sticky top-4 h-[calc(80vh-2rem)] rounded-2xl overflow-hidden shadow-lg border border-border bg-card">
-                      <GeoMap
-                        listings={listings}
-                        onBoundsChanged={handleMapBoundsChange}
-                        hoveredListingId={hoveredListingId}
-                        onMarkerHover={setHoveredListingId}
-                        onOpenMap={handleOpenMapModal}
-                        isEditor={isEditor || isAdmin}
-                        setMapReady={setMapReady}
-                      />
-                    </div>
+                <div className={`w-full lg:w-[50%] flex-1 animate-in slide-in-from-right-10 duration-300 ${!showMap ? 'sr-only invisible !w-0 h-0 lg:h-auto' : 'block h-[400px] lg:h-auto'}`}>
+                  <div className="sticky top-4 h-[calc(80vh-2rem)] w-full rounded-2xl overflow-hidden shadow-lg border border-border bg-card">
+                    <GeoMap
+                      listings={listings}
+                      onBoundsChanged={handleMapBoundsChange}
+                      hoveredListingId={hoveredListingId}
+                      onMarkerHover={setHoveredListingId}
+                      onOpenMap={handleOpenMapModal}
+                      isEditor={isEditor || isAdmin}
+                      setMapReady={setMapReady}
+                      center={mapCenter}
+                      zoom={mapZoom}
+                      onCenterChanged={setMapCenter}
+                      onZoomChanged={setMapZoom}
+                    />
                   </div>
-                )}
+                </div>
               </div>
             ) : listings.length === 0 ? (
               !loading && (

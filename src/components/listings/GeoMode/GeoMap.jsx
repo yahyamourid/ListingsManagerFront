@@ -27,11 +27,20 @@ const mapOptions = {
     ],
 };
 
-export const GeoMap = ({ listings, onBoundsChanged, hoveredListingId, onMarkerHover, setMapReady }) => {
-    const mapRef = useRef(null);
-
+export const GeoMap = ({
+    listings,
+    onBoundsChanged,
+    hoveredListingId,
+    onMarkerHover,
+    setMapReady,
+    center,
+    zoom,
+    onCenterChanged,
+    onZoomChanged
+}) => {
+    const mapRef = useRef(null); 
     // Interaction state
-    const [activeMarkerId, setActiveMarkerId] = useState(null); 
+    const [activeMarkerId, setActiveMarkerId] = useState(null);
 
     const onLoad = useCallback((map) => {
         mapRef.current = map;
@@ -60,6 +69,15 @@ export const GeoMap = ({ listings, onBoundsChanged, hoveredListingId, onMarkerHo
 
         // Defer slighty if needed, but onIdle is already debounced by GMaps
         onBoundsChanged(polygonString);
+
+        // Update parent state for persistence
+        if (onCenterChanged) {
+            const currentCenter = mapRef.current.getCenter();
+            onCenterChanged({ lat: currentCenter.lat(), lng: currentCenter.lng() });
+        }
+        if (onZoomChanged) {
+            onZoomChanged(mapRef.current.getZoom());
+        }
     };
 
     const onMapClick = () => {
@@ -70,8 +88,8 @@ export const GeoMap = ({ listings, onBoundsChanged, hoveredListingId, onMarkerHo
         <div className="h-full w-full bg-muted/20 overflow-hidden relative">
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
-                center={DEFAULT_CENTER}
-                zoom={12}
+                center={center || DEFAULT_CENTER}
+                zoom={zoom || 12}
                 onLoad={onLoad}
                 onUnmount={onUnmount}
                 onIdle={handleIdle}
@@ -121,16 +139,15 @@ export const GeoMap = ({ listings, onBoundsChanged, hoveredListingId, onMarkerHo
                                 <InfoWindowF
                                     position={position}
                                     onCloseClick={() => {
-                                        if (isSelected) setActiveMarkerId(null);
-                                        // If hovered, dragging mouse out will clear it via onMouseOut
+                                        if (isSelected) setActiveMarkerId(null);                                
                                     }}
                                     options={{
-                                        disableAutoPan: true, 
+                                        disableAutoPan: true,
                                         pixelOffset: new window.google.maps.Size(0, -10),
-                                        maxWidth: 440, 
+                                        maxWidth: 440,
                                         headerDisabled: true
-                                        
-                                        
+
+
                                     }}
                                 >
                                     <div
